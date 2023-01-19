@@ -30,7 +30,7 @@ public class AuthenticationserviceController {
 		int maxSequence = 9999; //that is the limit of current sequence impl can support
 		LocalDateTime now = LocalDateTime.now();
 		// below day1 value should not be changed as accountno format
-		// will rely on below day diff result
+		// will rely on below minute diff result
 		LocalDateTime day1 = LocalDateTime.of(2023, 1, 1, 0, 0);
 		long daydiff = ChronoUnit.MINUTES.between(day1, now);
 		return new AccountSequenceImpl(maxSequence, daydiff);
