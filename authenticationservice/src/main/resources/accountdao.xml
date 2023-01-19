@@ -5,7 +5,7 @@
 	<context:property-placeholder location="classpath:application.properties" />
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="driverClassName" value="${datasource.driver}" />
 		<property name="url" value="${datasource.url}" />
 		<property name="username" value="${datasource.username}" />
 		<property name="password" value="${datasource.password}" />

@@ -3,7 +3,6 @@ package com.richard.authenticationservice.db;
 import com.richard.authenticationservice.model.Account;
 import javax.sql.DataSource;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -12,8 +11,9 @@ public class AccountJDBCTemplate implements AccountDao {
 	private JdbcTemplate jdbcTemplateObject;
 	
 	public AccountJDBCTemplate() {
-		ApplicationContext context = new ClassPathXmlApplicationContext("accountdao.xml");
-		jdbcTemplateObject = new JdbcTemplate((DataSource)context.getBean("dataSource"));
+		try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("accountdao.xml")) {
+			jdbcTemplateObject = new JdbcTemplate((DataSource)context.getBean("dataSource"));
+		} 
 	}
 
 	@Override
