@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class AuthenticationServiceController {
+public class AuthenticationserviceController {
 	
 	//TODO to be implemented
 	@PostMapping("/createAccount")
