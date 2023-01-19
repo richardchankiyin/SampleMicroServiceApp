@@ -19,6 +19,11 @@ class AuthenticationserviceMessageCodeTest {
 	}
 	
 	@Test
+	void testF001() {
+		assertEquals("[F001]System error", msgCode.getMessage("F001"));
+	}
+	
+	@Test
 	void testE001() {
 		assertEquals("[E001]Wrong Request Content", msgCode.getMessage("E001"));
 	}
@@ -29,4 +34,8 @@ class AuthenticationserviceMessageCodeTest {
 		assertEquals("[E002]Insufficient Account Info", msgCode.getMessage("E002"));
 	}
 
+	@Test
+	void testM001() {
+		assertEquals("[M001]Account created successfully", msgCode.getMessage("M001"));
+	}
 }
