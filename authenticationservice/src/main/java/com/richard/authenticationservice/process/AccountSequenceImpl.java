@@ -6,11 +6,11 @@ public class AccountSequenceImpl implements AccountSequence{
 
 	private AtomicInteger ai;
 	private int maxSequence;
-	private int sequenceprefix;
+	private long sequenceprefix;
 	
 	private static final int INTERNAL_MAX_SEQ = 10000;
 	
-	public AccountSequenceImpl(int maxSequence, int sequenceprefix) {
+	public AccountSequenceImpl(int maxSequence, long sequenceprefix) {
 		this.ai = new AtomicInteger(0);
 		if (maxSequence >= INTERNAL_MAX_SEQ) {
 			throw new IllegalArgumentException("maxSequence too big");

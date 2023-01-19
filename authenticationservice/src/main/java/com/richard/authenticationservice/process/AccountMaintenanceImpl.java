@@ -1,15 +1,19 @@
 package com.richard.authenticationservice.process;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.richard.authenticationservice.AuthenticationserviceMessageCode;
 import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.model.Account;
 
+
 public class AccountMaintenanceImpl implements AccountMaintenance{
 	
-	private static final String ACCOUNT_FORMAT = "%18d";
+	Logger logger = LoggerFactory.getLogger(AccountMaintenanceImpl.class);
 	private AccountSequence accountSequence;
 	private AccountDao accountDao;
 	public AccountMaintenanceImpl(AccountSequence accountSequence
@@ -20,7 +24,7 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 	
 	private String assignAccountNoToNewAccount() {
 		long seq = this.accountSequence.getNextSequence();
-		return String.format(ACCOUNT_FORMAT, seq);
+		return StringUtils.leftPad(String.valueOf(seq), 18, '0');
 	}
 	
 	private void checkInfoForCreateAccount(Account info) {
@@ -32,6 +36,10 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 		if (name == null || name.isBlank()) {
 			throw new IllegalArgumentException("name is blank");
 		}
+		
+		if (name.length() < 3) {
+			throw new IllegalArgumentException("name too short");
+		}
 	}
 	
 	public Triplet<Boolean,String,Account> createAccount(Account info) {
@@ -39,6 +47,7 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 		try {
 			checkInfoForCreateAccount(info);
 		} catch (Exception e) {
+			logger.error("checkInfoForCreateAccount", e);
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E002"), null);
 		}
 		
@@ -47,7 +56,7 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 		try {
 			accountDao.createAccount(info);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("accountDao.createAccount", e);
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("F001"), info);
 		}
 		

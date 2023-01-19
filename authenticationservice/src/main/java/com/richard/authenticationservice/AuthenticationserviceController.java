@@ -32,8 +32,8 @@ public class AuthenticationserviceController {
 		// below day1 value should not be changed as accountno format
 		// will rely on below day diff result
 		LocalDateTime day1 = LocalDateTime.of(2023, 1, 1, 0, 0);
-		long daydiff = ChronoUnit.DAYS.between(day1, now);
-		return new AccountSequenceImpl(maxSequence, (int)daydiff);
+		long daydiff = ChronoUnit.MINUTES.between(day1, now);
+		return new AccountSequenceImpl(maxSequence, daydiff);
 	}
 	
 	public AuthenticationserviceController() {
