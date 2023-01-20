@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.richard.authenticationservice.AuthenticationserviceMessageCode;
 import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.model.Account;
+import com.richard.authenticationservice.msg.AccountSynchronizer;
 
 
 public class AccountMaintenanceImpl implements AccountMaintenance{
@@ -16,10 +17,12 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 	Logger logger = LoggerFactory.getLogger(AccountMaintenanceImpl.class);
 	private AccountSequence accountSequence;
 	private AccountDao accountDao;
+	private AccountSynchronizer accountSync;
 	public AccountMaintenanceImpl(AccountSequence accountSequence
-			, AccountDao accountDao) {
+			, AccountDao accountDao, AccountSynchronizer accountSync) {
 		this.accountSequence = accountSequence;
 		this.accountDao = accountDao;
+		this.accountSync = accountSync;
 	}
 	
 	private String assignAccountNoToNewAccount() {
@@ -61,6 +64,11 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 		}
 		
 		//TODO calling rabbitmq to sync account data to other services
+		try {
+			accountSync.synchronize(info);
+		} catch (Exception e) {
+			logger.error("accountSync.synchronize", e);
+		}
 		
 		return Triplet.with(true, AuthenticationserviceMessageCode.getInstance().getMessage("M001"), info);
 	}

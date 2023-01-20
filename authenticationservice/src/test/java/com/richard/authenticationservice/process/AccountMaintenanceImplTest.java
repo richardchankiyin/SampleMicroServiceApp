@@ -13,17 +13,20 @@ import static org.mockito.Mockito.mock;
 
 import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.model.Account;
+import com.richard.authenticationservice.msg.AccountSynchronizer;
 
 class AccountMaintenanceImplTest {
 
 	private AccountMaintenanceImpl impl; 
 	private AccountSequence seq;
 	private AccountDao dao;
+	private AccountSynchronizer sync;
 	@BeforeEach
 	void setup() {
 		seq = mock(AccountSequence.class);
 		dao = mock(AccountDao.class);
-		impl = new AccountMaintenanceImpl(seq, dao);
+		sync = mock(AccountSynchronizer.class);
+		impl = new AccountMaintenanceImpl(seq, dao, sync);
 	}
 	
 	@Test
@@ -60,6 +63,7 @@ class AccountMaintenanceImplTest {
 		a.setName("Jonathon Ray");
 		when(seq.getNextSequence()).thenReturn(1L);
 		doNothing().when(dao).createAccount(any(Account.class));
+		doNothing().when(sync).synchronize(any(Account.class));
 		Triplet<Boolean, String, Account> result = impl.createAccount(a);
 		String accountno = StringUtils.leftPad(String.valueOf(1L), 18, '0');
 		assertTrue(result.getValue0());

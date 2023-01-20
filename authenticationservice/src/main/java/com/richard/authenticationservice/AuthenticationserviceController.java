@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.db.AccountJDBCTemplate;
 import com.richard.authenticationservice.model.Account;
+import com.richard.authenticationservice.msg.AccountSynchronizer;
+import com.richard.authenticationservice.msg.AccountSynchronizerImpl;
 import com.richard.authenticationservice.process.AccountMaintenance;
 import com.richard.authenticationservice.process.AccountMaintenanceImpl;
 import com.richard.authenticationservice.process.AccountSequence;
@@ -25,6 +27,7 @@ public class AuthenticationserviceController {
 	private AccountMaintenance accountMaintenance;
 	private AccountSequence accountSequence;
 	private AccountDao accountDao;
+	private AccountSynchronizer accountSync;
 	
 	private AccountSequence createAccountSequence() {
 		int maxSequence = 9999; //that is the limit of current sequence impl can support
@@ -39,7 +42,8 @@ public class AuthenticationserviceController {
 	public AuthenticationserviceController() {
 		this.accountSequence = createAccountSequence();
 		this.accountDao = new AccountJDBCTemplate();
-		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao);
+		this.accountSync = new AccountSynchronizerImpl();
+		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao, accountSync);
 	}
 	
 	//payload format name=<string>
