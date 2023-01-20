@@ -2,23 +2,23 @@ package com.richard.authenticationservice.msg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.AmqpTemplate;
+
 
 import com.richard.authenticationservice.db.AccountSyncDao;
 import com.richard.authenticationservice.model.Account;
 import com.richard.authenticationservice.model.AccountSync;
 
 public class AccountSynchronizerImpl implements AccountSynchronizer {
-	Logger logger = LoggerFactory.getLogger(AccountSynchronizerImpl.class);
-	private MessagingConnectionFactory factory;
-	private RabbitTemplate template;
+	private Logger logger = LoggerFactory.getLogger(AccountSynchronizerImpl.class);
+	private AmqpTemplate template;
 	private MessageKeyGenerator msgKeyGenerator;
 	private AccountSyncDao dao;
+	private static final String QUEUE = "accountsync";
 	
 	
-	public AccountSynchronizerImpl(MessageKeyGenerator msgKeyGenerator, AccountSyncDao dao) {
-		this.factory = MessagingConnectionFactoryImpl.getInstance();
-		this.template = new RabbitTemplate(factory.getConnectionFactory());
+	public AccountSynchronizerImpl(MessageKeyGenerator msgKeyGenerator, AmqpTemplate amqp, AccountSyncDao dao) {
+		this.template = amqp;
 		this.msgKeyGenerator = msgKeyGenerator;
 		this.dao = dao;
 	}
@@ -42,17 +42,16 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 		sync.setPayload(payload);
 		sync.setStatus(isSuccess);
 		
+		logger.debug("prepareAccountSyncFromAccount returning: {}", sync);
 		return sync;
 	}
 	
 	
 	@Override
 	public void synchronize(Account info) {
-		// TODO to be updated with serializing account with unique message key
-		//. Also calling dao to update the messaging sending result
 		AccountSync sync = prepareAccountSyncFromAccount(info);
 		try {
-			template.convertAndSend("accountsync", sync.getPayload());
+			template.convertAndSend(QUEUE, sync.getPayload());
 			sync.setStatus(true);
 		} catch (Exception e) {
 			sync.setStatus(false);

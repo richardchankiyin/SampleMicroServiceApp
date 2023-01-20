@@ -5,6 +5,8 @@ package com.richard.authenticationservice;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ import com.richard.authenticationservice.msg.AccountSynchronizer;
 import com.richard.authenticationservice.msg.AccountSynchronizerImpl;
 import com.richard.authenticationservice.msg.MessageKeyGenerator;
 import com.richard.authenticationservice.msg.MessageKeyGeneratorImpl;
+import com.richard.authenticationservice.msg.MessagingConnectionFactoryImpl;
 import com.richard.authenticationservice.process.AccountMaintenance;
 import com.richard.authenticationservice.process.AccountMaintenanceImpl;
 import com.richard.authenticationservice.process.AccountSequence;
@@ -33,6 +36,7 @@ public class AuthenticationserviceController {
 	private AccountDao accountDao;
 	private AccountSynchronizer accountSync;
 	private MessageKeyGenerator msgKeyGenerator;
+	private AmqpTemplate amqp;
 	private AccountSyncDao accountSyncDao;
 	
 	private AccountSequence createAccountSequence() {
@@ -50,7 +54,8 @@ public class AuthenticationserviceController {
 		this.accountSequence = createAccountSequence();
 		this.accountDao = new AccountJDBCTemplate();
 		this.accountSyncDao = new AccountSyncJDBCTemplate();
-		this.accountSync = new AccountSynchronizerImpl(msgKeyGenerator,accountSyncDao);
+		this.amqp = new RabbitTemplate(MessagingConnectionFactoryImpl.getInstance().getConnectionFactory());
+		this.accountSync = new AccountSynchronizerImpl(msgKeyGenerator,amqp,accountSyncDao);
 		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao, accountSync);
 	}
 	

@@ -14,7 +14,7 @@ import com.richard.authenticationservice.msg.AccountSynchronizer;
 
 public class AccountMaintenanceImpl implements AccountMaintenance{
 	
-	Logger logger = LoggerFactory.getLogger(AccountMaintenanceImpl.class);
+	private Logger logger = LoggerFactory.getLogger(AccountMaintenanceImpl.class);
 	private AccountSequence accountSequence;
 	private AccountDao accountDao;
 	private AccountSynchronizer accountSync;
@@ -63,7 +63,7 @@ public class AccountMaintenanceImpl implements AccountMaintenance{
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("F001"), info);
 		}
 		
-		//TODO calling rabbitmq to sync account data to other services
+		//calling rabbitmq to sync account data to other services
 		try {
 			accountSync.synchronize(info);
 		} catch (Exception e) {

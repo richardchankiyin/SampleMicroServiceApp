@@ -46,4 +46,8 @@ public class AccountSync {
 	private void setStatus(String s) {
 		this.status = s;
 	}
+	
+	public String toString() {
+		return String.format("AccountSync[id=%s,msgkey=%s,accountno=%s,payload=%s,status=%s]", id, msgkey, accountno, payload, status);
+	}
 }
