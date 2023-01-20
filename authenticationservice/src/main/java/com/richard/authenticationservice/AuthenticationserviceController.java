@@ -5,6 +5,9 @@ package com.richard.authenticationservice;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.javatuples.Triplet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +33,7 @@ import com.richard.authenticationservice.process.AccountSequenceImpl;
 @RestController
 @RequestMapping("/api")
 public class AuthenticationserviceController {
-	
+	private Logger logger = LoggerFactory.getLogger(AuthenticationserviceController.class);
 	private AccountMaintenance accountMaintenance;
 	private AccountSequence accountSequence;
 	private AccountDao accountDao;
@@ -60,18 +63,22 @@ public class AuthenticationserviceController {
 	}
 	
 	//payload format name=<string>
+	//return message with code
 	@PostMapping("/createAccount")
     public String createAccount(@RequestBody String accountDetail) {
+		logger.info("received request from createAccount: [{}]", accountDetail);
 		String input = accountDetail.trim();
 		if (input.startsWith("name=")) {
 			Account account = new Account();
 			account.setName(input.substring(5, input.length()));
-			String result = accountMaintenance.createAccount(account).getValue1();
-			//TODO to be changed to json message
-			return result;
+			Triplet<Boolean, String, Account> serviceResult = accountMaintenance.createAccount(account);
+			if (serviceResult.getValue0()) {
+				return serviceResult.getValue1() + "[Account No:" + serviceResult.getValue2().getAccountno() + "]";
+			} else {
+				return serviceResult.getValue1();
+			}
 		} else {
-			//TODO to be changed to json message
-			return "not accepted";
+			return AuthenticationserviceMessageCode.getInstance().getMessage("E001");
 		}
     }
 	
