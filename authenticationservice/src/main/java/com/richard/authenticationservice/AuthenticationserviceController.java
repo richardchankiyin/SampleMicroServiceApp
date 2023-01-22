@@ -53,6 +53,7 @@ public class AuthenticationserviceController {
 	}
 	
 	public AuthenticationserviceController() {
+		//TODO consider to refactor below from new to bean retrieval
 		this.msgKeyGenerator = new MessageKeyGeneratorImpl();
 		this.accountSequence = createAccountSequence();
 		this.accountDao = new AccountJDBCTemplate();
