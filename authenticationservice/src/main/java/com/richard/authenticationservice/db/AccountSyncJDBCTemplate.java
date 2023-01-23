@@ -2,11 +2,13 @@ package com.richard.authenticationservice.db;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.richard.authenticationservice.model.AccountSync;
 
 public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements AccountSyncDao {
-
-	private static final int FINDFAILACCOUNTSYNCENTRIESLIMIT = 500;
+	private Logger logger = LoggerFactory.getLogger(AccountSyncJDBCTemplate.class);
 	
 	@Override
 	public void createAccountSync(AccountSync sync) {
@@ -17,8 +19,7 @@ public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements Acc
 
 	@Override
 	public List<AccountSync> findFailedAccountSyncEntries() {
-		String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? order by uptime asc limit " 
-				+ FINDFAILACCOUNTSYNCENTRIESLIMIT;
+		String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? order by uptime asc"; 
 		
 		return getJdbcTemplate().query(SQL, (rs, rowNum) -> {
 			AccountSync s = new AccountSync();
@@ -32,8 +33,13 @@ public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements Acc
 
 	@Override
 	public void updateAccountSyncStatus(AccountSync sync) {
-		// TODO Auto-generated method stub
-
+		String SQL = "update accountsync set status = ? where msgkey = ?";
+		String status = sync.getStatus();
+		String msgkey = sync.getMsgkey();
+		
+		int updateCount = getJdbcTemplate().update(SQL, status, msgkey);
+		
+		logger.debug("SQL:[{}, {}, {}] with updateCount: {}", SQL, status, msgkey, updateCount);
 	}
 
 }
