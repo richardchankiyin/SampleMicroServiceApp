@@ -17,7 +17,7 @@ public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements Acc
 
 	@Override
 	public List<AccountSync> findFailedAccountSyncEntries() {
-		String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? limit " 
+		String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? order by uptime asc limit " 
 				+ FINDFAILACCOUNTSYNCENTRIESLIMIT;
 		
 		return getJdbcTemplate().query(SQL, (rs, rowNum) -> {
