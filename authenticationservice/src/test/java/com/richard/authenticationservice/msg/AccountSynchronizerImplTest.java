@@ -92,7 +92,7 @@ class AccountSynchronizerImplTest {
 		doNothing().when(amqp).convertAndSend(any(String.class), any(Object.class));
 		doNothing().when(dao).updateAccountSyncStatus(any(AccountSync.class));
 		
-		impl.resynchronize(acctSync);
+		boolean result = impl.resynchronize(acctSync);
 		
 		final String queuename = "accountsync";
 		final String expectedPayload = 
@@ -104,7 +104,7 @@ class AccountSynchronizerImplTest {
 		assertEquals("000000000281880001", acctSync.getAccountno());
 		assertEquals(expectedPayload, acctSync.getPayload());
 		assertEquals("S", acctSync.getStatus());		
-		
+		assertTrue(result);
 	}
 	
 	@Test
@@ -118,7 +118,7 @@ class AccountSynchronizerImplTest {
 		doThrow(AmqpException.class).when(amqp).convertAndSend(any(String.class), any(Object.class));
 		doNothing().when(dao).updateAccountSyncStatus(any(AccountSync.class));
 		
-		impl.resynchronize(acctSync);
+		boolean result = impl.resynchronize(acctSync);
 		
 		final String expectedPayload = 
 				"{\"msgKey\":\"e0011e6a-e0a1-434a-9345-cf427f08df59\",\"account\":{\"accountNo\":\"000000000281880001\",\"name\":\"Sam Chan\"}}";
@@ -129,7 +129,7 @@ class AccountSynchronizerImplTest {
 		assertEquals("000000000281880001", acctSync.getAccountno());
 		assertEquals(expectedPayload, acctSync.getPayload());
 		assertEquals("F", acctSync.getStatus());		
-		
+		assertFalse(result);
 	}
 	
 }

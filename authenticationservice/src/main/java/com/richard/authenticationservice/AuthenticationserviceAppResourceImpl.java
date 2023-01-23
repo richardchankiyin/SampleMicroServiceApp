@@ -51,7 +51,7 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 		this.accountSyncDao = new AccountSyncJDBCTemplate();
 		this.amqp = new RabbitTemplate(MessagingConnectionFactoryImpl.getInstance().getConnectionFactory());
 		this.accountSync = new AccountSynchronizerImpl(msgKeyGenerator,amqp,accountSyncDao);
-		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao, accountSync);
+		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao, accountSyncDao, accountSync);
 	}
 
 	@Override

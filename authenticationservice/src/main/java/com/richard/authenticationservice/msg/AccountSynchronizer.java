@@ -5,5 +5,5 @@ import com.richard.authenticationservice.model.AccountSync;
 
 public interface AccountSynchronizer {
 	public void synchronize(Account info);
-	public void resynchronize(AccountSync item);
+	public boolean resynchronize(AccountSync item);
 }

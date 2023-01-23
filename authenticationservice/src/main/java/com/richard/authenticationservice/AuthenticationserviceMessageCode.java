@@ -18,8 +18,13 @@ public class AuthenticationserviceMessageCode {
 		code2Message.put("E001", "Wrong Request Content");
 		code2Message.put("E002", "Insufficient Account Info");
 		
+		// warn
+		code2Message.put("W001", "Account synchronization with failures");
+		
 		// message
 		code2Message.put("M001", "Account created successfully");
+		code2Message.put("M002", "Account Resynchronized successfully");
+		code2Message.put("M003", "No accounts resynchronized required");
 		
 	}
 	

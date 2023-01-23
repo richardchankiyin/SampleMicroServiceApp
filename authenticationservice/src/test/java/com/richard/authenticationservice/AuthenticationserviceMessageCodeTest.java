@@ -38,4 +38,14 @@ class AuthenticationserviceMessageCodeTest {
 	void testM001() {
 		assertEquals("[M001]Account created successfully", msgCode.getMessage("M001"));
 	}
+	
+	@Test
+	void testM002() {
+		assertEquals("[M002]Account Resynchronized successfully", msgCode.getMessage("M002"));
+	}
+	
+	@Test
+	void testM003() {
+		assertEquals("[M003]No accounts resynchronized required", msgCode.getMessage("M003"));
+	}
 }

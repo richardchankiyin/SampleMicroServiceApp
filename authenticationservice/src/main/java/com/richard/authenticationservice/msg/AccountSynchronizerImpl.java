@@ -65,14 +65,16 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 	}
 
 	@Override
-	public void resynchronize(AccountSync sync) {
+	public boolean resynchronize(AccountSync sync) {
 		// TODO Auto-generated method stub
 		try {
 			template.convertAndSend(QUEUE, sync.getPayload());
 			sync.setStatus(true);
+			return true;
 		} catch (Exception e) {
 			sync.setStatus(false);
 			logger.error("template.convertAndSend", e);
+			return false;
 		} finally {
 			// it is supposed an entry in accountsync table found before
 			// therefore there should be simply update based on
