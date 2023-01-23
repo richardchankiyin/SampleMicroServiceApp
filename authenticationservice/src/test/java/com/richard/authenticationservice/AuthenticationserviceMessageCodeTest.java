@@ -27,13 +27,22 @@ class AuthenticationserviceMessageCodeTest {
 	void testE001() {
 		assertEquals("[E001]Wrong Request Content", msgCode.getMessage("E001"));
 	}
-
 	
 	@Test
 	void testE002() {
 		assertEquals("[E002]Insufficient Account Info", msgCode.getMessage("E002"));
 	}
+	
+	@Test
+	void testE003() {
+		assertEquals("[E003]Unable to login", msgCode.getMessage("E003"));
+	}
 
+	@Test
+	void testE004() {
+		assertEquals("[E004]Incorrect Login Info", msgCode.getMessage("E004"));
+	}
+	
 	@Test
 	void testM001() {
 		assertEquals("[M001]Account created successfully", msgCode.getMessage("M001"));
@@ -47,5 +56,10 @@ class AuthenticationserviceMessageCodeTest {
 	@Test
 	void testM003() {
 		assertEquals("[M003]No accounts resynchronized required", msgCode.getMessage("M003"));
+	}
+	
+	@Test
+	void testM004() {
+		assertEquals("[M004]Login successfully", msgCode.getMessage("M004"));
 	}
 }
