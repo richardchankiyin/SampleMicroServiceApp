@@ -57,7 +57,27 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 			sync.setStatus(false);
 			logger.error("template.convertAndSend", e);
 		} finally {
+			// it is supposed to be the first time attempt to sync
+			// and no records found for this message in accountsync
+			// table. Therefore only create will be called
 			dao.createAccountSync(sync);
+		}
+	}
+
+	@Override
+	public void resynchronize(AccountSync sync) {
+		// TODO Auto-generated method stub
+		try {
+			template.convertAndSend(QUEUE, sync.getPayload());
+			sync.setStatus(true);
+		} catch (Exception e) {
+			sync.setStatus(false);
+			logger.error("template.convertAndSend", e);
+		} finally {
+			// it is supposed an entry in accountsync table found before
+			// therefore there should be simply update based on
+			// msgkey
+			dao.updateAccountSyncStatus(sync);
 		}
 	}
 

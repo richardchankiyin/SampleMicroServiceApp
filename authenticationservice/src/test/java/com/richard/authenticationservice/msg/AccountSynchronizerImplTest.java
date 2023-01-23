@@ -27,18 +27,18 @@ class AccountSynchronizerImplTest {
 	private AmqpTemplate amqp;
 	private AccountSyncDao dao;
 	private Account account;
+
 	@BeforeEach
 	void setup() {
 		gen = mock(MessageKeyGenerator.class);
 		amqp = mock(AmqpTemplate.class);
 		dao = mock(AccountSyncDao.class);
 		account = mock(Account.class);
-		
 		impl = new AccountSynchronizerImpl(gen, amqp, dao);
 	}
 	
 	@Test
-	void testSuccess() {
+	void testSynchronizeSuccess() {
 		when(account.getAccountno()).thenReturn("000000000281880001");
 		when(account.getName()).thenReturn("Sam Chan");
 		when(gen.generateUniqueKey()).thenReturn("e0011e6a-e0a1-434a-9345-cf427f08df59");
@@ -61,7 +61,7 @@ class AccountSynchronizerImplTest {
 	}
 	
 	@Test
-	void testFailDueToAMQPIssue() {
+	void testSynchronizeFailDueToAMQPIssue() {
 		when(account.getAccountno()).thenReturn("000000000281880001");
 		when(account.getName()).thenReturn("Sam Chan");
 		when(gen.generateUniqueKey()).thenReturn("e0011e6a-e0a1-434a-9345-cf427f08df59");
@@ -81,4 +81,55 @@ class AccountSynchronizerImplTest {
 		assertEquals("F", valueCaptureForAccountSync.getValue().getStatus());		
 	}
 
+	@Test
+	void testResynchronizeSuccess() {
+		AccountSync acctSync = new AccountSync();
+		acctSync.setMsgkey("e0011e6a-e0a1-434a-9345-cf427f08df59");
+		acctSync.setAccountno("000000000281880001");
+		acctSync.setPayload("{\"msgKey\":\"e0011e6a-e0a1-434a-9345-cf427f08df59\",\"account\":{\"accountNo\":\"000000000281880001\",\"name\":\"Sam Chan\"}}");
+		acctSync.setStatus(false);
+		
+		doNothing().when(amqp).convertAndSend(any(String.class), any(Object.class));
+		doNothing().when(dao).updateAccountSyncStatus(any(AccountSync.class));
+		
+		impl.resynchronize(acctSync);
+		
+		final String queuename = "accountsync";
+		final String expectedPayload = 
+				"{\"msgKey\":\"e0011e6a-e0a1-434a-9345-cf427f08df59\",\"account\":{\"accountNo\":\"000000000281880001\",\"name\":\"Sam Chan\"}}";
+		
+		verify(amqp, times(1)).convertAndSend(queuename, expectedPayload);
+		verify(dao, times(1)).updateAccountSyncStatus(any(AccountSync.class));
+		assertEquals("e0011e6a-e0a1-434a-9345-cf427f08df59", acctSync.getMsgkey());
+		assertEquals("000000000281880001", acctSync.getAccountno());
+		assertEquals(expectedPayload, acctSync.getPayload());
+		assertEquals("S", acctSync.getStatus());		
+		
+	}
+	
+	@Test
+	void testResynchronizeFailDueToAMQPIssue() {
+		AccountSync acctSync = new AccountSync();
+		acctSync.setMsgkey("e0011e6a-e0a1-434a-9345-cf427f08df59");
+		acctSync.setAccountno("000000000281880001");
+		acctSync.setPayload("{\"msgKey\":\"e0011e6a-e0a1-434a-9345-cf427f08df59\",\"account\":{\"accountNo\":\"000000000281880001\",\"name\":\"Sam Chan\"}}");
+		acctSync.setStatus(false);
+		
+		doThrow(AmqpException.class).when(amqp).convertAndSend(any(String.class), any(Object.class));
+		doNothing().when(dao).updateAccountSyncStatus(any(AccountSync.class));
+		
+		impl.resynchronize(acctSync);
+		
+		final String expectedPayload = 
+				"{\"msgKey\":\"e0011e6a-e0a1-434a-9345-cf427f08df59\",\"account\":{\"accountNo\":\"000000000281880001\",\"name\":\"Sam Chan\"}}";
+		
+		
+		verify(dao, times(1)).updateAccountSyncStatus(any(AccountSync.class));
+		assertEquals("e0011e6a-e0a1-434a-9345-cf427f08df59", acctSync.getMsgkey());
+		assertEquals("000000000281880001", acctSync.getAccountno());
+		assertEquals(expectedPayload, acctSync.getPayload());
+		assertEquals("F", acctSync.getStatus());		
+		
+	}
+	
 }

@@ -13,7 +13,7 @@ public class AuthenticationserviceScheduledTasks {
 		
 	}
 	
-	@Scheduled(fixedRate = 60000)
+	@Scheduled(fixedRate = 180000)
 	public void heartBeat() {
 		logger.info("This is a heart beat activity");
 	}
