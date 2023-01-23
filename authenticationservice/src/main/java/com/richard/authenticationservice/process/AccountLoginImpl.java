@@ -73,8 +73,34 @@ public class AccountLoginImpl implements AccountLogin {
 
 	@Override
 	public Triplet<Boolean, String, AccountLoginSession> isSessionValid(AccountLoginSession session) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			String sessionKey = session.getSessionkey();
+			AccountLoginSession s = dao.getSession(sessionKey);
+			if (s == null) {
+				logger.debug("cannot find session {} stored", sessionKey);
+				throw new IllegalArgumentException("cannot find session key: " + sessionKey);
+			} else {
+				long expiredTimeEpoch = s.getExpirytime().getTime();
+				long currentTime = clock.getCurrentTimestamp();
+				if (currentTime >= expiredTimeEpoch) {
+					logger.debug("session key: {} expired. Expired Time: {} Current Time: {}", sessionKey, expiredTimeEpoch, currentTime);
+					try {
+						int deleteCount = dao.deleteBySessionKey(sessionKey);
+						logger.debug("delete count {} for deleteBySessionKey: {}", deleteCount, sessionKey);
+						throw new IllegalStateException("expired session key: " + sessionKey);
+					} catch (IllegalStateException ie) {
+						throw ie;
+					} catch (Exception e2) {
+						throw new IllegalStateException("fail to delete by session key: " + sessionKey);
+					}
+				} else {
+					return Triplet.with(true, AuthenticationserviceMessageCode.getInstance().getMessage("M007"), s);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("invalid session/dao error", e);
+			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("M006"), session);
+		}
 	}
 
 	@Override

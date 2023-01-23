@@ -77,4 +77,14 @@ class AuthenticationserviceMessageCodeTest {
 	void testM005() {
 		assertEquals("[M005]Logout successfully", msgCode.getMessage("M005"));
 	}
+	
+	@Test
+	void testM006() {
+		assertEquals("[M006]Invalid session", msgCode.getMessage("M006"));
+	}
+	
+	@Test
+	void testM007() {
+		assertEquals("[M007]Valid session", msgCode.getMessage("M007"));
+	}
 }

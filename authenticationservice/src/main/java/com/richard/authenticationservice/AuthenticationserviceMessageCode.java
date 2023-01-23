@@ -30,6 +30,8 @@ public class AuthenticationserviceMessageCode {
 		code2Message.put("M003", "No accounts resynchronized required");
 		code2Message.put("M004", "Login successfully");
 		code2Message.put("M005", "Logout successfully");
+		code2Message.put("M006", "Invalid session");
+		code2Message.put("M007", "Valid session");
 		
 	}
 	

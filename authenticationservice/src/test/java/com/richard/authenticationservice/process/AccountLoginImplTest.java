@@ -9,6 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.sql.Timestamp;
+
 import org.javatuples.Triplet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,6 +124,70 @@ class AccountLoginImplTest {
 		assertEquals("000000000326490001", resultSession.getAccountno());
 		assertEquals(expectedExpiredTimestamp, resultSession.getExpirytime().getTime());
 		
+	}
+	
+	@Test
+	void testIsSessionValidFalseDueToSessionKeyNotFound() {
+		when(dao.getSession(any(String.class))).thenReturn(null);
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		Triplet<Boolean,String,AccountLoginSession> result = impl.isSessionValid(s);
+		assertFalse(result.getValue0());
+		assertEquals("[M006]Invalid session", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
+	
+	@Test
+	void testIsSessionValidFalseDueToExpired() {
+		AccountLoginSession sessionInDB = new AccountLoginSession();
+		sessionInDB.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		sessionInDB.setAccountno("000000000326490001");
+		sessionInDB.setExpirytime(new Timestamp(1674466598627L));
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		when(dao.getSession("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(sessionInDB);
+		when(clock.getCurrentTimestamp()).thenReturn(1674466598627L + 1000);
+		when(dao.deleteBySessionKey("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(1);
+		Triplet<Boolean,String,AccountLoginSession> result = impl.isSessionValid(s);
+		assertFalse(result.getValue0());
+		assertEquals("[M006]Invalid session", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
+	
+	@Test
+	void testIsSessionValidFalseExpiredSessionWhenSelectAndWasDeletedByAnotherRequest() {
+		AccountLoginSession sessionInDB = new AccountLoginSession();
+		sessionInDB.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		sessionInDB.setAccountno("000000000326490001");
+		sessionInDB.setExpirytime(new Timestamp(1674466598627L));
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		when(dao.getSession("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(sessionInDB);
+		when(clock.getCurrentTimestamp()).thenReturn(1674466598627L + 1000);
+		when(dao.deleteBySessionKey("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(0);
+		Triplet<Boolean,String,AccountLoginSession> result = impl.isSessionValid(s);
+		assertFalse(result.getValue0());
+		assertEquals("[M006]Invalid session", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
+	
+	@Test
+	void testIsSessionValidTrue() {
+		AccountLoginSession sessionInDB = new AccountLoginSession();
+		sessionInDB.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		sessionInDB.setAccountno("000000000326490001");
+		sessionInDB.setExpirytime(new Timestamp(1674466598627L));
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		when(dao.getSession("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(sessionInDB);
+		when(clock.getCurrentTimestamp()).thenReturn(1674466598627L - 10000);
+		when(dao.deleteBySessionKey("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(1);
+		Triplet<Boolean,String,AccountLoginSession> result = impl.isSessionValid(s);
+		verify(dao, times(0)).deleteBySessionKey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		assertTrue(result.getValue0());
+		assertEquals("[M007]Valid session", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+		assertEquals("000000000326490001", result.getValue2().getAccountno());
 	}
 	
 	@Test
