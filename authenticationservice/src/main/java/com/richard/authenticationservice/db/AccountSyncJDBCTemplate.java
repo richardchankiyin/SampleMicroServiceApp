@@ -28,7 +28,7 @@ public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements Acc
 			s.setPayload(rs.getString("payload"));
 			s.setStatus(AccountSync.STATUS_SUCCESS.equals(rs.getString("status")));
 			return s;
-		});
+		}, new Object[] {AccountSync.STATUS_FAILED});
 	}
 
 	@Override
