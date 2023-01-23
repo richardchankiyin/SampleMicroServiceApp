@@ -2,7 +2,6 @@ package com.richard.authenticationservice.process;
 
 import java.sql.Timestamp;
 
-import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,8 +79,17 @@ public class AccountLoginImpl implements AccountLogin {
 
 	@Override
 	public Triplet<Boolean, String, AccountLoginSession> logout(AccountLoginSession session) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			int deleteCount = dao.deleteBySessionKey(session.getSessionkey());
+			if (deleteCount != 1) {
+				// deleteCount not equals to 1, that means the sessionkey is not valid
+				return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("W002"), session);
+			}
+		} catch (Exception e) {
+			logger.error("dao.deleteBySessionKey", e);
+			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("F001"), session);
+		}
+		return Triplet.with(true, AuthenticationserviceMessageCode.getInstance().getMessage("M005"), session);
 	}
 
 }

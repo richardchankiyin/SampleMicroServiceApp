@@ -123,5 +123,38 @@ class AccountLoginImplTest {
 		assertEquals(expectedExpiredTimestamp, resultSession.getExpirytime().getTime());
 		
 	}
+	
+	@Test
+	void testLogoutByInvalidSessionKey() {
+		when(dao.deleteBySessionKey("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(0);
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		Triplet<Boolean,String,AccountLoginSession> result = impl.logout(s);
+		assertFalse(result.getValue0());
+		assertEquals("[W002]Attempt to logout using invalid session key", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
+	
+	@Test
+	void testLogoutDeleteSessionFailed() {
+		doThrow(RuntimeException.class).when(dao).deleteBySessionKey(any(String.class));
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		Triplet<Boolean,String,AccountLoginSession> result = impl.logout(s);
+		assertFalse(result.getValue0());
+		assertEquals("[F001]System error", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
+	
+	@Test
+	void testLogoutSuccessfully() {
+		when(dao.deleteBySessionKey("40f2c614-67e6-4a21-b668-31bbde232ec1")).thenReturn(1);
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		Triplet<Boolean,String,AccountLoginSession> result = impl.logout(s);
+		assertTrue(result.getValue0());
+		assertEquals("[M005]Logout successfully", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
 
 }

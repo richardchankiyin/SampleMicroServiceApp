@@ -22,13 +22,14 @@ public class AuthenticationserviceMessageCode {
 		
 		// warn
 		code2Message.put("W001", "Account synchronization with failures");
+		code2Message.put("W002", "Attempt to logout using invalid session key");
 		
 		// message
 		code2Message.put("M001", "Account created successfully");
 		code2Message.put("M002", "Account Resynchronized successfully");
 		code2Message.put("M003", "No accounts resynchronized required");
 		code2Message.put("M004", "Login successfully");
-		
+		code2Message.put("M005", "Logout successfully");
 		
 	}
 	

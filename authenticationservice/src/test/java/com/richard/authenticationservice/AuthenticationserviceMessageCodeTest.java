@@ -44,6 +44,16 @@ class AuthenticationserviceMessageCodeTest {
 	}
 	
 	@Test
+	void testW001() {
+		assertEquals("[W001]Account synchronization with failures", msgCode.getMessage("W001"));
+	}
+	
+	@Test
+	void testW002() {
+		assertEquals("[W002]Attempt to logout using invalid session key", msgCode.getMessage("W002"));
+	}
+	
+	@Test
 	void testM001() {
 		assertEquals("[M001]Account created successfully", msgCode.getMessage("M001"));
 	}
@@ -61,5 +71,10 @@ class AuthenticationserviceMessageCodeTest {
 	@Test
 	void testM004() {
 		assertEquals("[M004]Login successfully", msgCode.getMessage("M004"));
+	}
+	
+	@Test
+	void testM005() {
+		assertEquals("[M005]Logout successfully", msgCode.getMessage("M005"));
 	}
 }
