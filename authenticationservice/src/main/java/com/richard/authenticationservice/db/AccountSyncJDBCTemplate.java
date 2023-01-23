@@ -6,6 +6,8 @@ import com.richard.authenticationservice.model.AccountSync;
 
 public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements AccountSyncDao {
 
+	private static final int FINDFAILACCOUNTSYNCENTRIESLIMIT = 500;
+	
 	@Override
 	public void createAccountSync(AccountSync sync) {
 		String SQL = "insert into accountsync (msgkey, accountno, payload, status) values (?,?,?,?)";
@@ -15,8 +17,17 @@ public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements Acc
 
 	@Override
 	public List<AccountSync> findFailedAccountSyncEntries() {
-		// TODO Auto-generated method stub
-		return null;
+		String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? limit " 
+				+ FINDFAILACCOUNTSYNCENTRIESLIMIT;
+		
+		return getJdbcTemplate().query(SQL, (rs, rowNum) -> {
+			AccountSync s = new AccountSync();
+			s.setMsgkey(rs.getString("msgkey"));
+			s.setAccountno(rs.getString("accountno"));
+			s.setPayload(rs.getString("payload"));
+			s.setStatus(AccountSync.STATUS_SUCCESS.equals(rs.getString("status")));
+			return s;
+		});
 	}
 
 	@Override

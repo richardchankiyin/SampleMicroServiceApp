@@ -6,8 +6,8 @@ public class AccountSync {
 	private String accountno;
 	private String payload;
 	private String status;
-	private static final String STATUS_SUCCESS = "S";
-	private static final String STATUS_FAILED = "F";
+	public static final String STATUS_SUCCESS = "S";
+	public static final String STATUS_FAILED = "F";
 	
 	public String getId() {
 		return id;
