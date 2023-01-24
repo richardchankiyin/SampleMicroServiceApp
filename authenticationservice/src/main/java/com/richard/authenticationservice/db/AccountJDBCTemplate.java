@@ -9,11 +9,11 @@ import com.richard.authenticationservice.model.Account;
  * @author richard
  *
  */
-public class AccountJDBCTemplate extends AsbtractJDBCTemplate implements AccountDao {
+public class AccountJDBCTemplate extends AbstractJDBCTemplate implements AccountDao {
 
 	@Override
 	public void createAccount(Account account) {
-		String SQL = "insert into account (accountno, name) values (?,?)";
+		final String SQL = "insert into account (accountno, name) values (?,?)";
 		getJdbcTemplate().update(SQL, account.getAccountno(), account.getName());
 	}
 

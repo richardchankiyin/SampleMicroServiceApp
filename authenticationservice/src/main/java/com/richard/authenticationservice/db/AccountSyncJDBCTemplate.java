@@ -7,19 +7,19 @@ import org.slf4j.LoggerFactory;
 
 import com.richard.authenticationservice.model.AccountSync;
 
-public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements AccountSyncDao {
+public class AccountSyncJDBCTemplate extends AbstractJDBCTemplate implements AccountSyncDao {
 	private Logger logger = LoggerFactory.getLogger(AccountSyncJDBCTemplate.class);
 	
 	@Override
 	public void createAccountSync(AccountSync sync) {
-		String SQL = "insert into accountsync (msgkey, accountno, payload, status) values (?,?,?,?)";
+		final String SQL = "insert into accountsync (msgkey, accountno, payload, status) values (?,?,?,?)";
 		getJdbcTemplate().update(SQL, sync.getMsgkey(), sync.getAccountno()
 				, sync.getPayload(), sync.getStatus());
 	}
 
 	@Override
 	public List<AccountSync> findFailedAccountSyncEntries() {
-		String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? order by uptime asc"; 
+		final String SQL = "select msgkey, accountno, payload, status from accountsync where status = ? order by uptime asc"; 
 		
 		return getJdbcTemplate().query(SQL, (rs, rowNum) -> {
 			AccountSync s = new AccountSync();
@@ -33,7 +33,7 @@ public class AccountSyncJDBCTemplate extends AsbtractJDBCTemplate implements Acc
 
 	@Override
 	public void updateAccountSyncStatus(AccountSync sync) {
-		String SQL = "update accountsync set status = ? where msgkey = ?";
+		final String SQL = "update accountsync set status = ? where msgkey = ?";
 		String status = sync.getStatus();
 		String msgkey = sync.getMsgkey();
 		

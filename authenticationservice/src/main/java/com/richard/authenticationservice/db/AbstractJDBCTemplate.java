@@ -5,10 +5,10 @@ import javax.sql.DataSource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public abstract class AsbtractJDBCTemplate {
+public abstract class AbstractJDBCTemplate {
 	private JdbcTemplate jdbcTemplateObject;
 	
-	public AsbtractJDBCTemplate() {
+	public AbstractJDBCTemplate() {
 		try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("datasource.xml")) {
 			jdbcTemplateObject = new JdbcTemplate((DataSource)context.getBean("dataSource"));
 		} 

@@ -3,11 +3,15 @@ package com.richard.authenticationservice;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.db.AccountJDBCTemplate;
+import com.richard.authenticationservice.db.AccountLoginSessionDao;
+import com.richard.authenticationservice.db.AccountLoginSessionJDBCTemplate;
 import com.richard.authenticationservice.db.AccountSyncDao;
 import com.richard.authenticationservice.db.AccountSyncJDBCTemplate;
 import com.richard.authenticationservice.msg.AccountSynchronizer;
@@ -15,20 +19,32 @@ import com.richard.authenticationservice.msg.AccountSynchronizerImpl;
 import com.richard.authenticationservice.msg.MessageKeyGenerator;
 import com.richard.authenticationservice.msg.MessageKeyGeneratorImpl;
 import com.richard.authenticationservice.msg.MessagingConnectionFactoryImpl;
+import com.richard.authenticationservice.process.AccountLogin;
+import com.richard.authenticationservice.process.AccountLoginImpl;
 import com.richard.authenticationservice.process.AccountMaintenance;
 import com.richard.authenticationservice.process.AccountMaintenanceImpl;
 import com.richard.authenticationservice.process.AccountSequence;
 import com.richard.authenticationservice.process.AccountSequenceImpl;
+import com.richard.authenticationservice.process.PasswordVerifier;
+import com.richard.authenticationservice.process.PasswordVerifierImpl;
+import com.richard.authenticationservice.process.SessionKeyGenerator;
+import com.richard.authenticationservice.process.SessionKeyGeneratorImpl;
 
 public class AuthenticationserviceAppResourceImpl implements AuthenticationserviceAppResource {
+	private Logger logger = LoggerFactory.getLogger(AuthenticationserviceAppResourceImpl.class);
 	
 	private AccountMaintenance accountMaintenance;
+	private AccountLogin accountLogin;
 	private AccountSequence accountSequence;
 	private AccountDao accountDao;
 	private AccountSynchronizer accountSync;
 	private MessageKeyGenerator msgKeyGenerator;
+	private PasswordVerifier passwordVerify;
+	private SessionKeyGenerator sessionKeyGen;
+	private Clock clock;
 	private AmqpTemplate amqp;
 	private AccountSyncDao accountSyncDao;
+	private AccountLoginSessionDao accountLoginSessionDao;
 	
 	private static AuthenticationserviceAppResourceImpl instance = new AuthenticationserviceAppResourceImpl();
 
@@ -44,14 +60,37 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 		return new AccountSequenceImpl(maxSequence, daydiff);
 	}
 	
+	private long getValidSessionDurationMilliSeconds() {
+		long builtindefault = 600000L;
+		long result = builtindefault;
+		String configStr = System.getProperty("session.valid.duration.millisecond");
+		try {
+			result = Long.parseLong(configStr);
+		} catch (Exception e) {
+			logger.error("Long.parseLong", e);
+			logger.warn("failed to obtain ValidSessionDurationMilliSeconds. Using built-in default: {}", builtindefault);
+		}
+		logger.info("valid session duration milliseconds: {}", result);
+		return result;
+	}
+	
 	public AuthenticationserviceAppResourceImpl() {
 		this.msgKeyGenerator = new MessageKeyGeneratorImpl();
 		this.accountSequence = createAccountSequence();
 		this.accountDao = new AccountJDBCTemplate();
 		this.accountSyncDao = new AccountSyncJDBCTemplate();
-		this.amqp = new RabbitTemplate(MessagingConnectionFactoryImpl.getInstance().getConnectionFactory());
+		this.amqp = new RabbitTemplate(MessagingConnectionFactoryImpl.getInstance()
+				.getConnectionFactory());
 		this.accountSync = new AccountSynchronizerImpl(msgKeyGenerator,amqp,accountSyncDao);
-		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao, accountSyncDao, accountSync);
+		this.accountMaintenance = new AccountMaintenanceImpl(accountSequence, accountDao
+				, accountSyncDao, accountSync);
+		
+		this.passwordVerify = new PasswordVerifierImpl();
+		this.sessionKeyGen = new SessionKeyGeneratorImpl();
+		this.clock = new ClockImpl();
+		this.accountLoginSessionDao = new AccountLoginSessionJDBCTemplate();
+		this.accountLogin = new AccountLoginImpl(passwordVerify, sessionKeyGen
+				, clock, getValidSessionDurationMilliSeconds(), accountLoginSessionDao);
 	}
 
 	@Override
@@ -87,6 +126,31 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 	@Override
 	public AccountMaintenance getAccountMaintenance() {
 		return this.accountMaintenance;
+	}
+
+	@Override
+	public PasswordVerifier getPasswordVerifier() {
+		return this.passwordVerify;
+	}
+
+	@Override
+	public SessionKeyGenerator getSessionKeyGenerator() {
+		return this.sessionKeyGen;
+	}
+
+	@Override
+	public Clock getClock() {
+		return this.clock;
+	}
+
+	@Override
+	public AccountLoginSessionDao getAccountLoginSessionDao() {
+		return this.accountLoginSessionDao;
+	}
+
+	@Override
+	public AccountLogin getAccountLogin() {
+		return this.accountLogin;
 	}
 
 }
