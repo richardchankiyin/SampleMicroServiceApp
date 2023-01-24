@@ -17,7 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.richard.authenticationservice.Clock;
+import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.db.AccountLoginSessionDao;
+import com.richard.authenticationservice.model.Account;
 import com.richard.authenticationservice.model.AccountLoginSession;
 
 
@@ -28,6 +30,7 @@ class AccountLoginImplTest {
 	private SessionKeyGenerator sessionKeyGen;
 	private Clock clock;
 	private AccountLoginSessionDao dao;
+	private AccountDao accountDao;
 	private static final String UNABLE_TO_LOGIN_MSG = "[E003]Unable to login";
 	@BeforeEach
 	void setup() {
@@ -35,12 +38,35 @@ class AccountLoginImplTest {
 		sessionKeyGen = mock(SessionKeyGenerator.class);
 		clock = mock(Clock.class);
 		dao = mock(AccountLoginSessionDao.class);
-		impl = new AccountLoginImpl(passwordVerify, sessionKeyGen, clock, 300 * 1000, dao);
+		accountDao = mock(AccountDao.class);
+		impl = new AccountLoginImpl(passwordVerify, sessionKeyGen, clock, 300 * 1000, accountDao, dao);
+	}
+	
+	@Test
+	void testLoginAccountNotExists() {
+		when(accountDao.getAccount("000000000326490001")).thenReturn(null);
+		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "badpassword".toCharArray());
+		assertFalse(result.getValue0());
+		assertEquals("[E004]Incorrect Login Info", result.getValue1());
+		assertNull(result.getValue2());
+	}
+	
+	@Test
+	void testLoginRetrieveAccountFailed() {
+		doThrow(RuntimeException.class).when(accountDao).getAccount(any(String.class));
+		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "badpassword".toCharArray());
+		assertFalse(result.getValue0());
+		assertEquals(UNABLE_TO_LOGIN_MSG, result.getValue1());
+		assertNull(result.getValue2());
 	}
 	
 	
 	@Test
 	void testLoginWrongPassword() {
+		Account acct = new Account();
+		acct.setAccountno("000000000326490001");
+		acct.setName("Michael");
+		when(accountDao.getAccount("000000000326490001")).thenReturn(acct);
 		when(passwordVerify.verify(any(String.class), any(char[].class))).thenReturn(false);
 		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "badpassword".toCharArray());
 		assertFalse(result.getValue0());
@@ -50,6 +76,10 @@ class AccountLoginImplTest {
 	
 	@Test
 	void testLoginVerifyPasswordFailed() {
+		Account acct = new Account();
+		acct.setAccountno("000000000326490001");
+		acct.setName("Michael");
+		when(accountDao.getAccount("000000000326490001")).thenReturn(acct);
 		doThrow(RuntimeException.class).when(passwordVerify).verify(any(String.class), any(char[].class));
 		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "goodpassword".toCharArray());
 		assertFalse(result.getValue0());
@@ -59,6 +89,10 @@ class AccountLoginImplTest {
 	
 	@Test
 	void testLoginSessionKeyGenerationFailed() {
+		Account acct = new Account();
+		acct.setAccountno("000000000326490001");
+		acct.setName("Michael");
+		when(accountDao.getAccount("000000000326490001")).thenReturn(acct);
 		when(passwordVerify.verify(any(String.class), any(char[].class))).thenReturn(true);
 		doThrow(RuntimeException.class).when(sessionKeyGen).generateSessionKey();
 		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "goodpassword".toCharArray());
@@ -69,6 +103,10 @@ class AccountLoginImplTest {
 	
 	@Test
 	void testLoginDeleteSessionFailed() {
+		Account acct = new Account();
+		acct.setAccountno("000000000326490001");
+		acct.setName("Michael");
+		when(accountDao.getAccount("000000000326490001")).thenReturn(acct);
 		when(passwordVerify.verify(any(String.class), any(char[].class))).thenReturn(true);
 		when(sessionKeyGen.generateSessionKey()).thenReturn("40f2c614-67e6-4a21-b668-31bbde232ec1");
 		doThrow(RuntimeException.class).when(dao).deleteByAccountno(any(String.class));
@@ -84,6 +122,10 @@ class AccountLoginImplTest {
 	
 	@Test
 	void testLoginCreateLoginSessionFailed() {
+		Account acct = new Account();
+		acct.setAccountno("000000000326490001");
+		acct.setName("Michael");
+		when(accountDao.getAccount("000000000326490001")).thenReturn(acct);
 		when(passwordVerify.verify(any(String.class), any(char[].class))).thenReturn(true);
 		when(sessionKeyGen.generateSessionKey()).thenReturn("40f2c614-67e6-4a21-b668-31bbde232ec1");
 		when(dao.deleteByAccountno("000000000326490001")).thenReturn(1);
@@ -99,6 +141,10 @@ class AccountLoginImplTest {
 	
 	@Test
 	void testLoginSuccessfully() {
+		Account acct = new Account();
+		acct.setAccountno("000000000326490001");
+		acct.setName("Michael");
+		when(accountDao.getAccount("000000000326490001")).thenReturn(acct);
 		when(passwordVerify.verify(any(String.class), any(char[].class))).thenReturn(true);
 		when(sessionKeyGen.generateSessionKey()).thenReturn("40f2c614-67e6-4a21-b668-31bbde232ec1");
 		when(dao.deleteByAccountno("000000000326490001")).thenReturn(1);

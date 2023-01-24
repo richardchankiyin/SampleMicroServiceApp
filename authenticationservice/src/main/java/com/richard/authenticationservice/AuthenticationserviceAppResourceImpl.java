@@ -90,7 +90,7 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 		this.clock = new ClockImpl();
 		this.accountLoginSessionDao = new AccountLoginSessionJDBCTemplate();
 		this.accountLogin = new AccountLoginImpl(passwordVerify, sessionKeyGen
-				, clock, getValidSessionDurationMilliSeconds(), accountLoginSessionDao);
+				, clock, getValidSessionDurationMilliSeconds(), accountDao, accountLoginSessionDao);
 	}
 
 	@Override

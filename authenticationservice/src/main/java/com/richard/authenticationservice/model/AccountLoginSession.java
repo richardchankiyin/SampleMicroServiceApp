@@ -31,4 +31,9 @@ public class AccountLoginSession {
 	public void setExpirytime(Timestamp expirytime) {
 		this.expirytime = expirytime;
 	}
+	
+	public String toString() {
+		return String.format("AccountLoginSession[id=%s,sessionkey=%s,accountno=%s,expirytime=%s]"
+				, id, sessionkey, accountno, expirytime);
+	}
 }

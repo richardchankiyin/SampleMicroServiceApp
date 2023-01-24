@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.richard.authenticationservice.AuthenticationserviceMessageCode;
 import com.richard.authenticationservice.Clock;
+import com.richard.authenticationservice.db.AccountDao;
 import com.richard.authenticationservice.db.AccountLoginSessionDao;
+import com.richard.authenticationservice.model.Account;
 import com.richard.authenticationservice.model.AccountLoginSession;
 
 public class AccountLoginImpl implements AccountLogin {
@@ -20,18 +22,34 @@ public class AccountLoginImpl implements AccountLogin {
 	private SessionKeyGenerator sessionKeyGen;
 	private Clock clock;
 	private AccountLoginSessionDao dao;
+	private AccountDao accountDao;
 	private long sessionValidDurationMillisec;
-	public AccountLoginImpl(PasswordVerifier passwordVerify, SessionKeyGenerator sessionKeyGen, Clock clock, long sessionValidDuration, AccountLoginSessionDao dao) {
+	public AccountLoginImpl(PasswordVerifier passwordVerify, SessionKeyGenerator sessionKeyGen, Clock clock, long sessionValidDuration, AccountDao accountDao, AccountLoginSessionDao dao) {
 		this.passwordVerify = passwordVerify;
 		this.sessionKeyGen = sessionKeyGen;
 		this.clock = clock;
 		this.sessionValidDurationMillisec = sessionValidDuration;
+		this.accountDao = accountDao;
 		this.dao = dao;
 	}
 	
 	@Override
 	@Transactional
 	public Triplet<Boolean, String, AccountLoginSession> login(String accountno, char[] password) {
+		Account incomingAccount = null;
+		try {
+			incomingAccount = accountDao.getAccount(accountno);
+		} catch (Exception e) {
+			logger.error("accountDao.getAccount with accountno:" + accountno, e);
+			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E003"), null);
+		}
+		
+		if (incomingAccount == null) {
+			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E004"), null);
+		}
+		
+		logger.debug("Incoming Account attempting login:{}", incomingAccount);
+		
 		boolean passwordVerified = false;
 		try {
 			passwordVerified = passwordVerify.verify(accountno, password);
@@ -44,6 +62,8 @@ public class AccountLoginImpl implements AccountLogin {
 		if (!passwordVerified) {
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E004"), null);
 		}
+		
+		logger.debug("Incoming Account password verified:{}", incomingAccount);
 		
 		String sessionKey = null;
 		try {
@@ -67,6 +87,8 @@ public class AccountLoginImpl implements AccountLogin {
 			logger.error("dao issue", e);
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E003"), null);
 		}
+		
+		logger.debug("Incoming Account {} with Session Created: {}", incomingAccount, session);
 		
 		return Triplet.with(true, AuthenticationserviceMessageCode.getInstance().getMessage("M004"), session);
 	}
