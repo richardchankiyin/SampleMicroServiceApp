@@ -53,6 +53,8 @@ public class AuthenticationserviceController {
 		}
     }
 
+	//payload format accountno=<string>,password=<string>
+	//return message with code
 	@PostMapping("/login")
     public String login(@RequestBody String credential) {
 		// use debug mode here because we do not want to show sensitive info when running production!
@@ -97,9 +99,39 @@ public class AuthenticationserviceController {
 
     }
 	
+	//payload format sessionkey=<string>
+	//return message with code
 	@PostMapping("/logout")
     public String logout(@RequestBody String sessionkey) {
-		//TODO to be implemented
-		return "to be implemented";
+		logger.info("received request from logout: [{}]", sessionkey);
+		String input = sessionkey.trim();
+		if (input.startsWith("sessionkey=")) {
+			String sk = input.substring(11, input.length());
+			AccountLoginSession as = new AccountLoginSession();
+			as.setSessionkey(sk);
+			Triplet<Boolean, String, AccountLoginSession> result = accountLogin.logout(as);
+			logger.debug("logout result for session key: {} -- {}", sk, result);
+			return result.getValue1();			
+		} else {
+			return AuthenticationserviceMessageCode.getInstance().getMessage("E001");
+		}
+	}
+	
+	//payload format sessionkey=<string>
+	//return message with code
+	@PostMapping("/validateSession")
+	public String validateSession(@RequestBody String sessionkey) {
+		logger.info("received request from validateSession: [{}]", sessionkey);
+		String input = sessionkey.trim();
+		if (input.startsWith("sessionkey=")) {
+			String sk = input.substring(11, input.length());
+			AccountLoginSession as = new AccountLoginSession();
+			as.setSessionkey(sk);
+			Triplet<Boolean, String, AccountLoginSession> result = accountLogin.isSessionValid(as);
+			logger.debug("validateSession result for session key: {} -- {}", sk, result);
+			return result.getValue1();
+		} else {
+			return AuthenticationserviceMessageCode.getInstance().getMessage("E001");
+		}
 	}
 }
