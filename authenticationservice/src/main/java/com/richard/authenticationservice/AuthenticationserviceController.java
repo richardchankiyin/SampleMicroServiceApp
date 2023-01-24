@@ -62,7 +62,7 @@ public class AuthenticationserviceController {
 		logger.debug("input: {}", input);
 		String[] inputItems = input.split(",");
 		try {
-			// TODO parsing logic to be changed. Need to handle escape characters
+			
 			if (inputItems.length != 2) {
 				throw new IllegalArgumentException("no delimiter (,) found");
 			}
@@ -96,4 +96,10 @@ public class AuthenticationserviceController {
 		}
 
     }
+	
+	@PostMapping("/logout")
+    public String logout(@RequestBody String sessionkey) {
+		//TODO to be implemented
+		return "to be implemented";
+	}
 }
