@@ -64,6 +64,7 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 		long builtindefault = 600000L;
 		long result = builtindefault;
 		String configStr = System.getProperty("session.valid.duration.millisecond");
+		logger.info("session.valid.duration.millisecond->{}", configStr);
 		try {
 			result = Long.parseLong(configStr);
 		} catch (Exception e) {

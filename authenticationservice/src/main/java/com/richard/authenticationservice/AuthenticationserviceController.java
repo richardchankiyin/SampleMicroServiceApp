@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.richard.authenticationservice.model.Account;
+import com.richard.authenticationservice.model.AccountLoginSession;
+import com.richard.authenticationservice.process.AccountLogin;
 import com.richard.authenticationservice.process.AccountMaintenance;
 
 @RestController
@@ -18,11 +20,13 @@ import com.richard.authenticationservice.process.AccountMaintenance;
 public class AuthenticationserviceController {
 	private Logger logger = LoggerFactory.getLogger(AuthenticationserviceController.class);
 	private AccountMaintenance accountMaintenance;
+	private AccountLogin accountLogin;
 	private AuthenticationserviceAppResource resource;
 	
 	public AuthenticationserviceController() {
 		this.resource = AuthenticationserviceAppResourceImpl.getInstance();
 		this.accountMaintenance = this.resource.getAccountMaintenance();
+		this.accountLogin = this.resource.getAccountLogin();
 	}
 	
 	//payload format name=<string>
@@ -44,10 +48,46 @@ public class AuthenticationserviceController {
 			return AuthenticationserviceMessageCode.getInstance().getMessage("E001");
 		}
     }
-	
-	//TODO to be implemented
+
 	@PostMapping("/login")
     public String login(@RequestBody String credential) {
-        return "To be implemented. Request: " + credential;
+		// use debug mode here because we do not want to show sensitive info when running production!
+		logger.debug("received request from login: [{}]", credential);
+		String input = credential.trim();
+		String[] inputItems = input.split(",");
+		try {
+			// TODO parsing logic to be changed. Need to handle escape characters
+			if (inputItems.length != 2) {
+				throw new IllegalArgumentException("no delimiter (,) found");
+			}
+			if (inputItems[0].startsWith("accountno=") && inputItems[1].startsWith("password=")) {
+				String accountnocontent = inputItems[0];
+				String passwordcontent = inputItems[1];
+				
+				String account = accountnocontent.substring(10, accountnocontent.length());
+				char[] password = passwordcontent.substring(9, passwordcontent.length()).toCharArray();
+				
+				Triplet<Boolean, String, AccountLoginSession> result = accountLogin.login(account, password);
+				
+				if (result.getValue0()) {
+					// login successfully
+					return result.getValue1() + "[Session:" + result.getValue2().getSessionkey() +"]";
+					
+				} else {
+					// failed to login
+					return result.getValue1();
+				}
+				
+			} else {
+				throw new IllegalArgumentException("cannot capture accountno and password");
+			}
+		} catch (IllegalArgumentException ie) {
+			logger.error("content invalid", ie);
+			return AuthenticationserviceMessageCode.getInstance().getMessage("E004");
+		} catch (Exception e) {
+			logger.error("severe error found!", e);
+			return AuthenticationserviceMessageCode.getInstance().getMessage("E004");
+		}
+
     }
 }
