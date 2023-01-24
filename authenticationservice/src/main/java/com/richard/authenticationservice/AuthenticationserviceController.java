@@ -2,6 +2,10 @@ package com.richard.authenticationservice;
 
 
 
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +57,9 @@ public class AuthenticationserviceController {
     public String login(@RequestBody String credential) {
 		// use debug mode here because we do not want to show sensitive info when running production!
 		logger.debug("received request from login: [{}]", credential);
-		String input = credential.trim();
+		String credential2 = URLDecoder.decode(credential,StandardCharsets.UTF_8);
+		String input = credential2.trim();
+		logger.debug("input: {}", input);
 		String[] inputItems = input.split(",");
 		try {
 			// TODO parsing logic to be changed. Need to handle escape characters

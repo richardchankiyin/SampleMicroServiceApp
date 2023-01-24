@@ -4,13 +4,6 @@
 
 	<context:property-placeholder location="classpath:application.properties" />
 
-	<!-- Creating TransactionManager Bean, since JDBC we are creating of type 
-		DataSourceTransactionManager -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${datasource.driver}" />
 		<property name="url" value="${datasource.url}" />

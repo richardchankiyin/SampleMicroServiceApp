@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.richard.authenticationservice.AuthenticationserviceMessageCode;
 import com.richard.authenticationservice.Clock;
@@ -34,7 +33,6 @@ public class AccountLoginImpl implements AccountLogin {
 	}
 	
 	@Override
-	@Transactional
 	public Triplet<Boolean, String, AccountLoginSession> login(String accountno, char[] password) {
 		Account incomingAccount = null;
 		try {

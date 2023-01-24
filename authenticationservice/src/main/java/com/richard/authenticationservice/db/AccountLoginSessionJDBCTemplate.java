@@ -30,9 +30,7 @@ public class AccountLoginSessionJDBCTemplate extends AbstractJDBCTemplate implem
 	public void createAccountLoginSession(AccountLoginSession session) {
 		final String SQL = "insert into accountloginsession (sessionkey, accountno, expirytime) values (?, ?, ?)";
 		String sessionkey = session.getSessionkey();
-		//TODO explicitly make this null to fail
-		//String accountno = session.getAccountno();
-		String accountno = null;
+		String accountno = session.getAccountno();
 		
 		Timestamp expirytime = session.getExpirytime();
 		getJdbcTemplate().update(SQL, sessionkey, accountno, expirytime);
