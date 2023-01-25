@@ -38,11 +38,13 @@ public class AccountSyncMessageListener {
 			parsedResult = accountSyncMessagePayloadParser.parse(incoming);
 		} catch (Exception e) {
 			logger.error("failed to parse message: {}", incoming);
+			return;
 			// do not throw exception as not required to requeue
 		}
 		
 		if (parsedResult == null) {
 			logger.error("cannot obtain parsing result for message: {}", incoming);
+			return;
 			// do not throw exception as not required to requeue
 		}
 		Account account = parsedResult.getValue0();
