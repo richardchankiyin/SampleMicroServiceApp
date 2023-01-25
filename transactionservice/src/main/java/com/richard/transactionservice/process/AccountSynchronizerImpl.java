@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.richard.transactionservice.TransactionserviceMessageCode;
 import com.richard.transactionservice.db.AccountBalanceDao;
@@ -59,7 +58,7 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 			existingItem = accountSyncDao.getByMessageKey(syncItem.getMsgkey());
 			logger.debug("existing accountsync entry: {}", existingItem);
 			if (existingItem != null) {
-				throw new IllegalStateException("existing accountsyn entry found");
+				throw new IllegalStateException("existing accountsync entry found");
 			}
 		} catch (IllegalStateException ie) {
 			return Triplet.with(false, TransactionserviceMessageCode.getInstance().getMessage("E002")
@@ -74,7 +73,8 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 		
 		TransactionStatus status = null;
 		try {
-			status = jdbcresourcemgr.getTransactionManager().getTransaction(new DefaultTransactionDefinition());
+			status = jdbcresourcemgr.getTransactionManager().getTransaction(
+					jdbcresourcemgr.createTransactionDefinition());
 			accountDao.createAccount(acctItem);
 			AccountBalance balance = new AccountBalance();
 			balance.setAccountno(acctItem.getAccountno());
@@ -87,6 +87,7 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 			logger.debug("accountSyncDaoResult: {}", accountSyncDaoResult);
 			jdbcresourcemgr.getTransactionManager().commit(status);			
 		} catch (Exception e) {
+			logger.error("dao error", e);
 			jdbcresourcemgr.getTransactionManager().rollback(status);
 			return Triplet.with(false, TransactionserviceMessageCode.getInstance().getMessage("F001"), syncItem);
 		}

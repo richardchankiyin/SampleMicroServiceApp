@@ -6,6 +6,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class JDBCResourceMgrImpl implements JDBCResourceMgr{
 	private JdbcTemplate jdbcTemplateObject;
@@ -32,5 +34,10 @@ public class JDBCResourceMgrImpl implements JDBCResourceMgr{
 	
 	public PlatformTransactionManager getTransactionManager() {
 		return txMgr;
+	}
+
+	@Override
+	public TransactionDefinition createTransactionDefinition() {
+		return new DefaultTransactionDefinition();
 	}
 }
