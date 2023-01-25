@@ -15,6 +15,7 @@ import org.javatuples.Triplet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.richard.authenticationservice.Clock;
 import com.richard.authenticationservice.db.AccountDao;
@@ -45,6 +46,15 @@ class AccountLoginImplTest {
 	@Test
 	void testLoginAccountNotExists() {
 		when(accountDao.getAccount("000000000326490001")).thenReturn(null);
+		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "badpassword".toCharArray());
+		assertFalse(result.getValue0());
+		assertEquals("[E004]Incorrect Login Info", result.getValue1());
+		assertNull(result.getValue2());
+	}
+	
+	@Test
+	void testLoginAccountNotExistsThrowEmptyResultDataAccessException() {
+		doThrow(EmptyResultDataAccessException.class).when(accountDao).getAccount("000000000326490001");
 		Triplet<Boolean,String,AccountLoginSession> result = impl.login("000000000326490001", "badpassword".toCharArray());
 		assertFalse(result.getValue0());
 		assertEquals("[E004]Incorrect Login Info", result.getValue1());
@@ -175,6 +185,17 @@ class AccountLoginImplTest {
 	@Test
 	void testIsSessionValidFalseDueToSessionKeyNotFound() {
 		when(dao.getSession(any(String.class))).thenReturn(null);
+		AccountLoginSession s = new AccountLoginSession();
+		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
+		Triplet<Boolean,String,AccountLoginSession> result = impl.isSessionValid(s);
+		assertFalse(result.getValue0());
+		assertEquals("[M006]Invalid session", result.getValue1());
+		assertEquals("40f2c614-67e6-4a21-b668-31bbde232ec1", result.getValue2().getSessionkey());
+	}
+	
+	@Test
+	void testIsSessionValidFalseDueToSessionKeyNotFoundThrowEmptyResultDataAccessException() {
+		doThrow(EmptyResultDataAccessException.class).when(dao).getSession(any(String.class));
 		AccountLoginSession s = new AccountLoginSession();
 		s.setSessionkey("40f2c614-67e6-4a21-b668-31bbde232ec1");
 		Triplet<Boolean,String,AccountLoginSession> result = impl.isSessionValid(s);

@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.richard.authenticationservice.AuthenticationserviceMessageCode;
 import com.richard.authenticationservice.Clock;
@@ -37,6 +38,9 @@ public class AccountLoginImpl implements AccountLogin {
 		Account incomingAccount = null;
 		try {
 			incomingAccount = accountDao.getAccount(accountno);
+		} catch (EmptyResultDataAccessException erde) {
+			logger.debug("no account found for: {}", accountno);
+			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E004"), null);
 		} catch (Exception e) {
 			logger.error("accountDao.getAccount with accountno:" + accountno, e);
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("E003"), null);
@@ -117,7 +121,11 @@ public class AccountLoginImpl implements AccountLogin {
 					return Triplet.with(true, AuthenticationserviceMessageCode.getInstance().getMessage("M007"), s);
 				}
 			}
-		} catch (Exception e) {
+		} catch(EmptyResultDataAccessException erde) {
+			logger.debug("no session: {} found", session);
+			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("M006"), session);
+		}
+		catch (Exception e) {
 			logger.error("invalid session/dao error", e);
 			return Triplet.with(false, AuthenticationserviceMessageCode.getInstance().getMessage("M006"), session);
 		}

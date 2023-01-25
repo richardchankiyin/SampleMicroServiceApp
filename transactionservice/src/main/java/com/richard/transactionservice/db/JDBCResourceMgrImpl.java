@@ -7,11 +7,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-public class AbstractJDBCTemplate {
+public class JDBCResourceMgrImpl implements JDBCResourceMgr{
 	private JdbcTemplate jdbcTemplateObject;
 	private PlatformTransactionManager txMgr;
 	
-	public AbstractJDBCTemplate() {
+	private static JDBCResourceMgrImpl instance;
+	static {
+		instance = new JDBCResourceMgrImpl();
+	}
+	
+	public static JDBCResourceMgrImpl getInstance() { return instance; }
+	
+	public JDBCResourceMgrImpl() {
 		try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("datasource.xml")) {
 			DataSource ds = (DataSource)context.getBean("dataSource");
 			jdbcTemplateObject = new JdbcTemplate(ds);
@@ -19,11 +26,11 @@ public class AbstractJDBCTemplate {
 		} 
 	}
 	
-	protected JdbcTemplate getJdbcTemplate() {
+	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplateObject;
 	}
 	
-	protected PlatformTransactionManager getTransactionManager() {
+	public PlatformTransactionManager getTransactionManager() {
 		return txMgr;
 	}
 }
