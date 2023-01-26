@@ -9,9 +9,11 @@ import com.richard.transactionservice.db.JDBCResourceMgr;
 import com.richard.transactionservice.process.AccountBalanceMaintenance;
 import com.richard.transactionservice.process.AccountSyncMessagePayloadParser;
 import com.richard.transactionservice.process.AccountSynchronizer;
+import com.richard.transactionservice.process.AccountTransferRequestIdGenerator;
 
 public interface TransactionserviceAppResource {
 	public Clock getClock();
+	public AccountTransferRequestIdGenerator getAccountTransferRequestIdGenerator();
 	public AccountDao getAccountDao();
 	public AccountSyncDao getAccountSyncDao();
 	public AccountBalanceDao getAccountBalanceDao();

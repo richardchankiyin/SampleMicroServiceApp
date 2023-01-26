@@ -1,5 +1,9 @@
 package com.richard.transactionservice;
 
+import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.richard.transactionservice.api.AuthenticationValidator;
 import com.richard.transactionservice.model.AccountBalance;
+import com.richard.transactionservice.model.AccountTransfer;
 import com.richard.transactionservice.process.AccountBalanceMaintenance;
+import com.richard.transactionservice.process.AccountTransferRequestIdGenerator;
 
 @RestController
 @RequestMapping("/api")
@@ -20,10 +26,12 @@ public class TransactionserviceController {
 	private TransactionserviceAppResource appresource;
 	private AccountBalanceMaintenance accountBalanceMaintenance;
 	private AuthenticationValidator authenticationValidator;
+	private AccountTransferRequestIdGenerator accountTransferRequestIdGenerator;
 	public TransactionserviceController() {
 		this.appresource = TransactionserviceAppResourceImpl.getInstance();
 		this.accountBalanceMaintenance = appresource.getAccountBalanceMaintenance();
 		this.authenticationValidator = appresource.getAuthenticationValidator();
+		this.accountTransferRequestIdGenerator = appresource.getAccountTransferRequestIdGenerator();
 	}
 	
 	private String retrieveAccountFromAuthenticationValidator(String value) {
@@ -61,9 +69,66 @@ public class TransactionserviceController {
 		}
     }
 	
-	//TODO to be implemented
+
+	//payload format sessionkey=<string>,amount=<numeric>
+	//return message with code. If success will append balance
 	@PostMapping("/account/transfer")
     public String transfer(@RequestBody String request) {
-        return "To be implemented. Request: " + request;
+		logger.debug("received request from transfer: [{}]", request);
+		String request2 = URLDecoder.decode(request,StandardCharsets.UTF_8);
+		String input = request2.trim();
+		logger.debug("input: {}", input);
+		String[] inputItems = input.split(",");
+		try {
+			if (inputItems.length != 2) {
+				throw new IllegalArgumentException("no delimiter (,) found");				
+			}
+			if (inputItems[0].startsWith("sessionkey=") && inputItems[1].startsWith("amount=")) {
+				String sessionkey = inputItems[0].substring(11, inputItems[0].length());
+				String amountStr = inputItems[1].substring(7, inputItems[1].length());
+				BigDecimal amount = null;
+				try {
+					amount = BigDecimal.valueOf(Double.valueOf(amountStr));	
+				} catch (Exception e) {
+					logger.debug("session key: {} amountStr: {} invalid", sessionkey, amountStr);
+					throw new IllegalArgumentException(e);
+				}
+				
+				Triplet<Boolean,String,String> authentication = authenticationValidator.authenticate(sessionkey);
+				if (authentication.getValue0()) {
+					// authorized, proceed to transfer
+					String doneBy = accountTransferRequestIdGenerator.generateUniqueRequestId();
+					String accountno = retrieveAccountFromAuthenticationValidator(authentication.getValue1());
+					
+					
+					AccountTransfer accountTransfer = new AccountTransfer();
+					accountTransfer.setAccountno(accountno);
+					accountTransfer.setAmount(amount);
+					accountTransfer.setDoneby(doneBy);
+
+					Triplet<Boolean, String, AccountBalance> result = accountBalanceMaintenance.transfer(accountTransfer);
+					logger.debug("transfer result: {}", result);
+					if (result.getValue0()) {
+						return TransactionserviceMessageCode.getInstance().getMessage("M007") + "[requestid=" + doneBy + ",balance=" + result.getValue2().getBalance() + "]";
+					} else {
+						return TransactionserviceMessageCode.getInstance().getMessage("M006") + "[requestid=" + doneBy + "]";
+					}
+					
+				} else {
+					// not authorized
+					return TransactionserviceMessageCode.getInstance().getMessage("M002");
+				}				
+			} else {
+				throw new IllegalArgumentException("cannot capture sessionkey and amount");
+			}			
+		} catch (IllegalArgumentException ie) {
+			logger.error("content invalid", ie);
+			return TransactionserviceMessageCode.getInstance().getMessage("M002");
+		}
+		catch (Exception e) {
+			logger.error("severe error found", e);
+			return TransactionserviceMessageCode.getInstance().getMessage("M002");
+		}
+
     }
 }

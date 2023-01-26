@@ -26,10 +26,13 @@ import com.richard.transactionservice.process.AccountSyncMessagePayloadParser;
 import com.richard.transactionservice.process.AccountSyncMessagePayloadParserImpl;
 import com.richard.transactionservice.process.AccountSynchronizer;
 import com.richard.transactionservice.process.AccountSynchronizerImpl;
+import com.richard.transactionservice.process.AccountTransferRequestIdGenerator;
+import com.richard.transactionservice.process.AccountTransferRequestIdGeneratorImpl;
 
 public class TransactionserviceAppResourceImpl implements TransactionserviceAppResource {
 	private Logger logger = LoggerFactory.getLogger(TransactionserviceAppResourceImpl.class);
 	private Clock clock;
+	private AccountTransferRequestIdGenerator accountTransferRequestIdGenerator;
 	private JDBCResourceMgr jdbcResourceMgr;
 	private AccountDao accountDao;
 	private AccountSyncDao accountSyncDao;
@@ -49,6 +52,7 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	
 	public TransactionserviceAppResourceImpl() {
 		this.clock = new ClockImpl();
+		this.accountTransferRequestIdGenerator = new AccountTransferRequestIdGeneratorImpl();
 		this.jdbcResourceMgr = JDBCResourceMgrImpl.getInstance();
 		this.accountDao = new AccountJDBCTemplate(jdbcResourceMgr);
 		this.accountSyncDao = new AccountSyncJDBCTemplate(jdbcResourceMgr);
@@ -159,6 +163,11 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	@Override
 	public Clock getClock() {
 		return clock;
+	}
+
+	@Override
+	public AccountTransferRequestIdGenerator getAccountTransferRequestIdGenerator() {
+		return accountTransferRequestIdGenerator;
 	}
 
 }
