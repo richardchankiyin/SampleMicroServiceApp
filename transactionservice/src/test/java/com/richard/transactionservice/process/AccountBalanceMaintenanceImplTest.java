@@ -233,10 +233,10 @@ class AccountBalanceMaintenanceImplTest {
 		Timestamp timestamp = new Timestamp(1674466598626L);
 		when(accountTransfer.getAccountno()).thenReturn("000000000354820001");
 		when(accountTransfer.getDoneby()).thenReturn("c739ace0-ac56-41f3-b9c7-a225add955fb");
-		when(accountTransfer.getAmount()).thenReturn(balance);
+		when(accountTransfer.getAmount()).thenReturn(amount);
 		
 		when(accountBalance.getAccountno()).thenReturn("000000000354820001");
-		when(accountBalance.getBalance()).thenReturn(amount);
+		when(accountBalance.getBalance()).thenReturn(balance);
 		when(accountBalance.getDoneby()).thenReturn("00b24637-e806-47e1-a0d7-de1a4ba290bd");
 		when(accountBalance.getUptime()).thenReturn(timestamp);
 		
@@ -281,15 +281,6 @@ class AccountBalanceMaintenanceImplTest {
 				BigDecimal.valueOf(100), BigDecimal.valueOf(20), BigDecimal.valueOf(120));	
 		transferSuccessfulCaseTemplate(
 				BigDecimal.valueOf(100.5), BigDecimal.valueOf(10.5), BigDecimal.valueOf(111.0));
-		/*
-		
-		transferSuccessfulCaseTemplate(
-				BigDecimal.valueOf(0), BigDecimal.valueOf(-20), BigDecimal.valueOf(-20));
-		transferSuccessfulCaseTemplate(
-				BigDecimal.valueOf(100.5), BigDecimal.valueOf(10.5), BigDecimal.valueOf(111));
-		transferSuccessfulCaseTemplate(
-				BigDecimal.valueOf(100.5), BigDecimal.valueOf(-10.5), BigDecimal.valueOf(90));
-		*/		
 	}
 	
 	@Test
@@ -300,12 +291,51 @@ class AccountBalanceMaintenanceImplTest {
 				BigDecimal.valueOf(100.5), BigDecimal.valueOf(-10.5), BigDecimal.valueOf(90.0));
 	}
 	
-	/*
+	@Test
+	void testTransferSuccessfulPositiveBalanceDecreaseAmountToNegativeBalance() {
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(100), BigDecimal.valueOf(-200), BigDecimal.valueOf(-100));
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(100.5), BigDecimal.valueOf(-300.1), BigDecimal.valueOf(-199.6));
+	}
+	
+	
+	@Test
 	void testTransferSuccessfulZeroBalanceIncreaseAmountToPositiveBalance() {
 		transferSuccessfulCaseTemplate(
-				BigDecimal.valueOf(0), BigDecimal.valueOf(20), BigDecimal.valueOf(20));
+				BigDecimal.ZERO, BigDecimal.valueOf(20), BigDecimal.valueOf(20));
+		transferSuccessfulCaseTemplate(
+				BigDecimal.ZERO, BigDecimal.valueOf(20.1), BigDecimal.valueOf(20.1));
 	}
-	*/
 	
+	@Test
+	void testTransferSuccessfulZeroBalanceDecreaseAmountToNegativeBalance() {
+		transferSuccessfulCaseTemplate(
+				BigDecimal.ZERO, BigDecimal.valueOf(-20.1), BigDecimal.valueOf(-20.1));
+	}
+	
+	@Test
+	void testTransferSuccessfulNegativeBalanceIncreaseAmountToPositiveBalance() {
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(-100), BigDecimal.valueOf(150), BigDecimal.valueOf(50));
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(-100), BigDecimal.valueOf(120.5), BigDecimal.valueOf(20.5));
+	}
+	
+	@Test
+	void testTransferSuccessfulNegativeBalanceIncreaseAmountToNegativeBalance() {
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(-100), BigDecimal.valueOf(20), BigDecimal.valueOf(-80));
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(-100), BigDecimal.valueOf(20.5), BigDecimal.valueOf(-79.5));
+	}
+	
+	@Test
+	void testTransferSuccessfulNegativeBalanceDecreaseAmountToNegativeBalance() {
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(-100), BigDecimal.valueOf(-20), BigDecimal.valueOf(-120));
+		transferSuccessfulCaseTemplate(
+				BigDecimal.valueOf(-100), BigDecimal.valueOf(-20.5), BigDecimal.valueOf(-120.5));
+	}
 	
 }
