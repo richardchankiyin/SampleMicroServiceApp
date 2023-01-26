@@ -129,7 +129,12 @@ public class AuthenticationserviceController {
 			as.setSessionkey(sk);
 			Triplet<Boolean, String, AccountLoginSession> result = accountLogin.isSessionValid(as);
 			logger.debug("validateSession result for session key: {} -- {}", sk, result);
-			return result.getValue1();
+			if (!result.getValue0()) {
+				return result.getValue1();
+			} else {
+				AccountLoginSession returned = result.getValue2();
+				return result.getValue1() + "[accountno=" + returned.getAccountno() + "]";
+			}
 		} else {
 			return AuthenticationserviceMessageCode.getInstance().getMessage("E001");
 		}
