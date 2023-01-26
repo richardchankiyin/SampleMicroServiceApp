@@ -66,7 +66,6 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 
 	@Override
 	public boolean resynchronize(AccountSync sync) {
-		// TODO Auto-generated method stub
 		try {
 			template.convertAndSend(QUEUE, sync.getPayload());
 			sync.setStatus(true);
