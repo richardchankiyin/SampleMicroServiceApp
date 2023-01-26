@@ -19,6 +19,8 @@ public class TransactionserviceMessageCode {
 		
 		// message
 		code2Message.put("M001", "Account sync successfully");
+		code2Message.put("M002", "Unauthorized access");
+		code2Message.put("M003", "Authorized");
 	}
 	
 	public String getMessage(String code) {

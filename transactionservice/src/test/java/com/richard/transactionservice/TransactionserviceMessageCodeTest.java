@@ -37,4 +37,14 @@ class TransactionserviceMessageCodeTest {
 	void testM001() {
 		assertEquals("[M001]Account sync successfully", msgCode.getMessage("M001"));
 	}
+	
+	@Test
+	void testM002() {
+		assertEquals("[M002]Unauthorized access", msgCode.getMessage("M002"));
+	}
+	
+	@Test
+	void testM003() {
+		assertEquals("[M003]Authorized", msgCode.getMessage("M003"));
+	}
 }
