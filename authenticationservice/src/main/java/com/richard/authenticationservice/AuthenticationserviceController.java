@@ -54,7 +54,7 @@ public class AuthenticationserviceController {
     }
 
 	//payload format accountno=<string>,password=<string>
-	//return message with code
+	//return message with code. If success will append sessionkey
 	@PostMapping("/login")
     public String login(@RequestBody String credential) {
 		// use debug mode here because we do not want to show sensitive info when running production!
@@ -118,7 +118,7 @@ public class AuthenticationserviceController {
 	}
 	
 	//payload format sessionkey=<string>
-	//return message with code
+	//return message with code. If success will append accountno
 	@PostMapping("/validateSession")
 	public String validateSession(@RequestBody String sessionkey) {
 		logger.info("received request from validateSession: [{}]", sessionkey);

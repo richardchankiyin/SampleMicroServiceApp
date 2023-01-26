@@ -16,11 +16,13 @@ public class TransactionserviceMessageCode {
 		// error
 		code2Message.put("E001", "Wrong Request Content");
 		code2Message.put("E002", "Account sync request processed before");
+		code2Message.put("E003", "No account balance found");
 		
 		// message
 		code2Message.put("M001", "Account sync successfully");
 		code2Message.put("M002", "Unauthorized access");
 		code2Message.put("M003", "Authorized");
+		code2Message.put("M004", "Account Balance retrieved");
 	}
 	
 	public String getMessage(String code) {

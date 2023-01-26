@@ -34,6 +34,11 @@ class TransactionserviceMessageCodeTest {
 	}
 
 	@Test
+	void testE003() {
+		assertEquals("[E003]No account balance found", msgCode.getMessage("E003"));
+	}
+	
+	@Test
 	void testM001() {
 		assertEquals("[M001]Account sync successfully", msgCode.getMessage("M001"));
 	}
@@ -46,5 +51,10 @@ class TransactionserviceMessageCodeTest {
 	@Test
 	void testM003() {
 		assertEquals("[M003]Authorized", msgCode.getMessage("M003"));
+	}
+	
+	@Test
+	void testM004() {
+		assertEquals("[M004]Account Balance retrieved", msgCode.getMessage("M004"));
 	}
 }

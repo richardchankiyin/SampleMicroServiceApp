@@ -16,7 +16,7 @@ public class AuthenticationValidatorImpl implements AuthenticationValidator {
 	private String serviceHost;
 	private int servicePort;
 	private HttpClient httpClient;
-	private static final String VALID_SESSION_CODE = "[M007]";
+	private static final String VALID_SESSION_CODE = "[M007]Valid session";
 	
 	public AuthenticationValidatorImpl(HttpClient httpClient, String serviceHost, int servicePort) {
 		this.httpClient = httpClient;
@@ -38,6 +38,10 @@ public class AuthenticationValidatorImpl implements AuthenticationValidator {
 		return request;
 	}
 	
+	private String parseReturnStringFromValidSessionCode(String value) {
+		return value.replace(VALID_SESSION_CODE, "");
+	}
+	
 	@Override
 	public Triplet<Boolean, String, String> authenticate(String sessionkey) {
 		try {
@@ -49,7 +53,7 @@ public class AuthenticationValidatorImpl implements AuthenticationValidator {
 			}
 			logger.debug("response body: {}", body);
 			if (body.startsWith(VALID_SESSION_CODE)) {
-				return Triplet.with(true, TransactionserviceMessageCode.getInstance().getMessage("M003"), sessionkey);
+				return Triplet.with(true, TransactionserviceMessageCode.getInstance().getMessage("M003") + parseReturnStringFromValidSessionCode(body), sessionkey);
 			} else {
 				return Triplet.with(false, TransactionserviceMessageCode.getInstance().getMessage("M002"), sessionkey);
 			}			

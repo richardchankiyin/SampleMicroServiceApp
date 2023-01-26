@@ -97,7 +97,7 @@ class AuthenticationValidatorImplTest {
 		ArgumentCaptor<HttpRequest> valueCapture = ArgumentCaptor.forClass(HttpRequest.class);
 		when(client.send(valueCapture.capture(), any(HttpResponse.BodyHandler.class))).thenReturn(response);
 		when(response.statusCode()).thenReturn(200);
-		when(response.body()).thenReturn("[M007]Valid session");
+		when(response.body()).thenReturn("[M007]Valid session[accountno=000000000272760001]");
 		
 		Triplet<Boolean, String, String> result = impl.authenticate("c739ace0-ac56-41f3-b9c7-a225add955fb");
 		
@@ -109,7 +109,7 @@ class AuthenticationValidatorImplTest {
 	    assertArrayEquals("sessionkey=c739ace0-ac56-41f3-b9c7-a225add955fb".getBytes(), actual);
 		
 		assertTrue(result.getValue0());
-		assertEquals("[M003]Authorized", result.getValue1());
+		assertEquals("[M003]Authorized[accountno=000000000272760001]", result.getValue1());
 		assertEquals("c739ace0-ac56-41f3-b9c7-a225add955fb", result.getValue2());
 	}
 

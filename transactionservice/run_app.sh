@@ -1,1 +1,1 @@
-java -Duser.timezone=UTC -Dlogging.level.com.richard.transactionservice=DEBUG -Dserver.port=8083 -jar target/transactionservice-0.0.1-SNAPSHOT.jar
+java -Duser.timezone=UTC -Dlogging.level.com.richard.transactionservice=DEBUG -Dauthenticationservice.connect.host=localhost -Dauthenticationservice.connect.port=8082 -Dauthenticationservice.connect.timeout.millisecond=5000 -Dserver.port=8083 -jar target/transactionservice-0.0.1-SNAPSHOT.jar

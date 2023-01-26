@@ -3,7 +3,7 @@ package com.richard.transactionservice.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-public class AcountTransfer {
+public class AccountTransfer {
 	private String id;
 	private String accountno;
 	private BigDecimal amount;
