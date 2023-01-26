@@ -36,8 +36,8 @@ public class AccountBalanceJDBCTemplate extends AbstractJDBCTemplate implements 
 
 	@Override
 	public void updateAccountBalance(AccountBalance before, AccountBalance after) {
-		final String SQL = "update accountbalance set balance = ? where accountno = ? and doneby = ? and uptime = ?";
-		int updateCount = getJdbcTemplate().update(SQL, after.getBalance(), before.getAccountno(), before.getDoneby(), before.getUptime());
+		final String SQL = "update accountbalance set balance = ?, doneby = ?, uptime = ? where accountno = ? and doneby = ? and uptime = ?";
+		int updateCount = getJdbcTemplate().update(SQL, after.getBalance(), after.getDoneby(), after.getUptime(), before.getAccountno(), before.getDoneby(), before.getUptime());
 		logger.debug("SQL: {} before: {} after: {} updateCount: {}", SQL, before, after, updateCount);
 		if (updateCount != 1) {
 			throw new RuntimeException("updateCount not equals to 1. Update failed");

@@ -18,11 +18,15 @@ public class TransactionserviceMessageCode {
 		code2Message.put("E002", "Account sync request processed before");
 		code2Message.put("E003", "No account balance found");
 		
+		
 		// message
 		code2Message.put("M001", "Account sync successfully");
 		code2Message.put("M002", "Unauthorized access");
 		code2Message.put("M003", "Authorized");
 		code2Message.put("M004", "Account Balance retrieved");
+		code2Message.put("M005", "Transfer Amount not accepted");
+		code2Message.put("M006", "Transfer rejected");
+		code2Message.put("M007", "Transfer complete");
 	}
 	
 	public String getMessage(String code) {

@@ -16,6 +16,8 @@ import com.richard.transactionservice.db.AccountDao;
 import com.richard.transactionservice.db.AccountJDBCTemplate;
 import com.richard.transactionservice.db.AccountSyncDao;
 import com.richard.transactionservice.db.AccountSyncJDBCTemplate;
+import com.richard.transactionservice.db.AccountTransferDao;
+import com.richard.transactionservice.db.AccountTransferJDBCTemplate;
 import com.richard.transactionservice.db.JDBCResourceMgr;
 import com.richard.transactionservice.db.JDBCResourceMgrImpl;
 import com.richard.transactionservice.process.AccountBalanceMaintenance;
@@ -27,10 +29,12 @@ import com.richard.transactionservice.process.AccountSynchronizerImpl;
 
 public class TransactionserviceAppResourceImpl implements TransactionserviceAppResource {
 	private Logger logger = LoggerFactory.getLogger(TransactionserviceAppResourceImpl.class);
+	private Clock clock;
 	private JDBCResourceMgr jdbcResourceMgr;
 	private AccountDao accountDao;
 	private AccountSyncDao accountSyncDao;
 	private AccountBalanceDao accountBalanceDao;
+	private AccountTransferDao accountTransferDao;
 	private AccountSynchronizer accountSynchronizer;
 	private AccountSyncMessagePayloadParser accountSyncMessagePayloadParser;
 	private AuthenticationValidator authenticationValidator;
@@ -44,10 +48,12 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	public static TransactionserviceAppResourceImpl getInstance() { return instance; }
 	
 	public TransactionserviceAppResourceImpl() {
+		this.clock = new ClockImpl();
 		this.jdbcResourceMgr = JDBCResourceMgrImpl.getInstance();
 		this.accountDao = new AccountJDBCTemplate(jdbcResourceMgr);
 		this.accountSyncDao = new AccountSyncJDBCTemplate(jdbcResourceMgr);
 		this.accountBalanceDao = new AccountBalanceJDBCTemplate(jdbcResourceMgr);
+		this.accountTransferDao = new AccountTransferJDBCTemplate(jdbcResourceMgr);
 		this.accountSynchronizer = new AccountSynchronizerImpl(jdbcResourceMgr
 				, accountDao, accountSyncDao, accountBalanceDao);
 		this.accountSyncMessagePayloadParser = new AccountSyncMessagePayloadParserImpl();
@@ -55,7 +61,8 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 		Pair<String,Integer> authenticationHostAndPort = getAuthenticationHostAndPort();
 		this.authenticationValidator = new AuthenticationValidatorImpl(httpclient
 				, authenticationHostAndPort.getValue0(), authenticationHostAndPort.getValue1());
-		this.accountBalanceMaintenance = new AccountBalanceMaintenanceImpl(jdbcResourceMgr, accountBalanceDao);
+		this.accountBalanceMaintenance = new AccountBalanceMaintenanceImpl(
+				clock, jdbcResourceMgr, accountBalanceDao, accountTransferDao);
 	}
 
 	private Pair<String, Integer> getAuthenticationHostAndPort() {
@@ -142,6 +149,16 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	@Override
 	public AccountBalanceMaintenance getAccountBalanceMaintenance() {
 		return accountBalanceMaintenance;
+	}
+
+	@Override
+	public AccountTransferDao getAccountTransferDao() {
+		return accountTransferDao;
+	}
+
+	@Override
+	public Clock getClock() {
+		return clock;
 	}
 
 }

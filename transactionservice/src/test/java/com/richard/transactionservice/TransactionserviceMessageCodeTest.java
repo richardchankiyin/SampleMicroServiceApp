@@ -57,4 +57,19 @@ class TransactionserviceMessageCodeTest {
 	void testM004() {
 		assertEquals("[M004]Account Balance retrieved", msgCode.getMessage("M004"));
 	}
+	
+	@Test
+	void testM005() {
+		assertEquals("[M005]Transfer Amount not accepted", msgCode.getMessage("M005"));
+	}
+	
+	@Test
+	void testM006() {
+		assertEquals("[M006]Transfer rejected", msgCode.getMessage("M006"));
+	}
+	
+	@Test
+	void testM007() {
+		assertEquals("[M007]Transfer complete", msgCode.getMessage("M007"));
+	}
 }
