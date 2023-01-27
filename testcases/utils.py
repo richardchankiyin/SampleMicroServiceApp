@@ -2,6 +2,7 @@ import requests
 import logging
 import mysql.connector
 import time
+import pika
 import os
 
 log = logging.getLogger()
@@ -21,14 +22,58 @@ def bringuptransactionservice():
     log.info('return text %s', r.text) 
 
 def killalljava():
-    c = "jcmd | awk '{print $1}' | xargs kill -9"
+    c = "jcmd | grep 'authenticationservice\|transactionservice' | awk '{print $1}' | xargs kill -9"
     os.system(c)
+
+def purgerabbitmq():
+    conn = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',port=25672))
+    channel = conn.channel()
+    try:
+        channel.queue_purge('accountsync')
+    finally:
+        channel.close()
+        conn.close()
 
 def getauthenticationservice():
     return 'localhost:8082'
 
 def gettransactionservice():
     return 'localhost:8083'
+
+def cleanupauthenticationdb():
+    h='localhost'
+    p=23306
+    u='app'
+    pw='apppass'
+    dbname='test'
+    conn = mysql.connector.connect(host=h, port=p, user=u, password=pw, database=dbname)
+    cursor = conn.cursor()
+    try:
+        cursor.execute('delete from accountloginsession')
+        cursor.execute('delete from accountsync')
+        cursor.execute('delete from account')
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
+
+def cleanuptransactiondb():
+    h='localhost'
+    p=33306
+    u='app'
+    pw='apppass'
+    dbname='test'
+    conn = mysql.connector.connect(host=h, port=p, user=u, password=pw, database=dbname)
+    cursor = conn.cursor()
+    try:
+        cursor.execute('delete from accounttransfer')
+        cursor.execute('delete from accountsync')
+        cursor.execute('delete from accountbalance')
+        cursor.execute('delete from account')
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
 
 def getaccountsyncfromdb(accountno, h, p, u, pw, dbname):
     conn = mysql.connector.connect(host=h, port=p, user=u, password=pw, database=dbname)
