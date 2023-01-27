@@ -154,7 +154,6 @@ public class TransactionserviceController {
 	//return message M002
 	@PostMapping("/admin/retrieveDuplicateAcctSync")
 	public String retrieveDuplicateAccountSync(@RequestBody String request) {
-		//TODO to be implemented
 		logger.debug("received request from retrieveDuplicateAcctSync: [{}]", request);
 		String request2 = URLDecoder.decode(request,StandardCharsets.UTF_8);
 		String input = request2.trim();

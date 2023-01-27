@@ -1,6 +1,7 @@
 import requests
 import logging
 import mysql.connector
+import time
 
 log = logging.getLogger()
 
@@ -103,6 +104,9 @@ def test_create_account_sync_withdb_successfully():
     assert(text.startswith('[M001]'))
     accountno = parsereturnstringfromcreateaccount(text) 
     log.info('accountno: %s', accountno)
+    #sleep for 1 sec to ensure synchronization complete 
+    time.sleep(1)
+
     r1 = getaccountfromauthenticationdb(accountno)
     r2 = getaccountfromtransactiondb(accountno)
     log.info('\nauthenticationdb account r1: %s\ntransactiondb account r2:%s\n', r1, r2)
