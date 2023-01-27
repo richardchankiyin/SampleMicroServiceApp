@@ -25,6 +25,8 @@ import com.richard.authenticationservice.process.AccountMaintenance;
 import com.richard.authenticationservice.process.AccountMaintenanceImpl;
 import com.richard.authenticationservice.process.AccountSequence;
 import com.richard.authenticationservice.process.AccountSequenceImpl;
+import com.richard.authenticationservice.process.AdminMonitor;
+import com.richard.authenticationservice.process.AdminMonitorImpl;
 import com.richard.authenticationservice.process.PasswordVerifier;
 import com.richard.authenticationservice.process.PasswordVerifierImpl;
 import com.richard.authenticationservice.process.SessionKeyGenerator;
@@ -45,6 +47,7 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 	private AmqpTemplate amqp;
 	private AccountSyncDao accountSyncDao;
 	private AccountLoginSessionDao accountLoginSessionDao;
+	private AdminMonitor adminMonitor;
 	
 	private static AuthenticationserviceAppResourceImpl instance = new AuthenticationserviceAppResourceImpl();
 
@@ -92,6 +95,7 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 		this.accountLoginSessionDao = new AccountLoginSessionJDBCTemplate();
 		this.accountLogin = new AccountLoginImpl(passwordVerify, sessionKeyGen
 				, clock, getValidSessionDurationMilliSeconds(), accountDao, accountLoginSessionDao);
+		this.adminMonitor = new AdminMonitorImpl();
 	}
 
 	@Override
@@ -152,6 +156,11 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 	@Override
 	public AccountLogin getAccountLogin() {
 		return this.accountLogin;
+	}
+
+	@Override
+	public AdminMonitor getAdminMonitor() {
+		return adminMonitor;
 	}
 
 }

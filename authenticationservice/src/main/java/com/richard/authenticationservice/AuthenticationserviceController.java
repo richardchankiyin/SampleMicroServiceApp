@@ -6,6 +6,7 @@ package com.richard.authenticationservice;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import com.richard.authenticationservice.model.Account;
 import com.richard.authenticationservice.model.AccountLoginSession;
 import com.richard.authenticationservice.process.AccountLogin;
 import com.richard.authenticationservice.process.AccountMaintenance;
+import com.richard.authenticationservice.process.AdminMonitor;
 
 @RestController
 @RequestMapping("/api")
@@ -25,12 +27,14 @@ public class AuthenticationserviceController {
 	private Logger logger = LoggerFactory.getLogger(AuthenticationserviceController.class);
 	private AccountMaintenance accountMaintenance;
 	private AccountLogin accountLogin;
+	private AdminMonitor adminMonitor;
 	private AuthenticationserviceAppResource resource;
 	
 	public AuthenticationserviceController() {
 		this.resource = AuthenticationserviceAppResourceImpl.getInstance();
 		this.accountMaintenance = this.resource.getAccountMaintenance();
 		this.accountLogin = this.resource.getAccountLogin();
+		this.adminMonitor = this.resource.getAdminMonitor();
 	}
 	
 	//payload format name=<string>
@@ -138,5 +142,18 @@ public class AuthenticationserviceController {
 		} else {
 			return AuthenticationserviceMessageCode.getInstance().getMessage("E001");
 		}
+	}
+	
+	//payload format password=<string>
+	//return message A002 is password is correct. Otherwise will 
+	//return message E004
+	@PostMapping("/admin/checkStatus")
+	public String checkStatus(@RequestBody String credential) {
+		// use debug mode here because we do not want to show sensitive info when running production!
+		logger.debug("received request from checkStatus: [{}]", credential);
+		char[] password = credential.substring(9, credential.length()).toCharArray();
+		Pair<Boolean, String> result = adminMonitor.checkStatus(password);
+		logger.debug("checkStatus result: {}", result);		
+		return result.getValue1();
 	}
 }

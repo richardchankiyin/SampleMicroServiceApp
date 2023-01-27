@@ -10,6 +10,7 @@ import com.richard.authenticationservice.msg.MessageKeyGenerator;
 import com.richard.authenticationservice.process.AccountLogin;
 import com.richard.authenticationservice.process.AccountMaintenance;
 import com.richard.authenticationservice.process.AccountSequence;
+import com.richard.authenticationservice.process.AdminMonitor;
 import com.richard.authenticationservice.process.PasswordVerifier;
 import com.richard.authenticationservice.process.SessionKeyGenerator;
 
@@ -26,4 +27,5 @@ public interface AuthenticationserviceAppResource {
 	public AmqpTemplate getAmqpTemplate();
 	public AccountMaintenance getAccountMaintenance();
 	public AccountLogin getAccountLogin();
+	public AdminMonitor getAdminMonitor();
 }

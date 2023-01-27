@@ -87,4 +87,9 @@ class AuthenticationserviceMessageCodeTest {
 	void testM007() {
 		assertEquals("[M007]Valid session", msgCode.getMessage("M007"));
 	}
+	
+	@Test
+	void testA001() {
+		assertEquals("[A001]Service is ready", msgCode.getMessage("A001"));
+	}
 }

@@ -33,6 +33,9 @@ public class AuthenticationserviceMessageCode {
 		code2Message.put("M006", "Invalid session");
 		code2Message.put("M007", "Valid session");
 		
+		// admin message
+		code2Message.put("A001", "Service is ready");
+		
 	}
 	
 	public String getMessage(String code) {
