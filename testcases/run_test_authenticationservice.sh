@@ -1,1 +1,1 @@
-pytest -vv --log-cli-level=INFO -rA test_authenticationservice.py
+pytest -vv --html=report.html --self-contained-html --log-cli-level=INFO -rA test_authenticationservice.py
