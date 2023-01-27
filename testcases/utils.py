@@ -2,8 +2,27 @@ import requests
 import logging
 import mysql.connector
 import time
+import os
 
 log = logging.getLogger()
+
+def bringupauthenticationservice():
+    c = 'java -Dsession.valid.duration.millisecond=300000 -Duser.timezone=UTC -Dlogging.level.com.richard.authenticationservice=DEBUG -Dserver.port=8082 -jar ../authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar &'
+    os.system(c)
+    time.sleep(5)
+    r = checkstatus(getauthenticationservice())
+    log.info('return text %s', r.text) 
+
+def bringuptransactionservice():
+    c = 'java -Duser.timezone=UTC -Dlogging.level.com.richard.transactionservice=DEBUG -Dauthenticationservice.connect.host=localhost -Dauthenticationservice.connect.port=8082 -Dauthenticationservice.connect.timeout.millisecond=5000 -Dserver.port=8083 -jar ../transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar &'
+    os.system(c)
+    time.sleep(5)
+    r = checkstatus(gettransactionservice())
+    log.info('return text %s', r.text) 
+
+def killalljava():
+    c = "jcmd | awk '{print $1}' | xargs kill -9"
+    os.system(c)
 
 def getauthenticationservice():
     return 'localhost:8082'
@@ -90,4 +109,9 @@ def enquirebalance(x):
 
 def transfer(x,y):
     r = requests.post('http://' + gettransactionservice() + '/api/account/transfer', data='sessionkey='+x+",amount="+str(y))
+    return r
+
+def checkstatus(service):
+    x = 'iamadmin'
+    r = requests.post('http://' + service + '/api/admin/checkStatus', data='password='+x)
     return r
