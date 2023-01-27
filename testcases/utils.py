@@ -63,6 +63,11 @@ def parsereturnstringfromvalidatesession(text):
     accountno = text[30:len(text)-1]
     return accountno
 
+def parsereturnstringfromenquirebalance(text):
+    #[M003]Authorized[balance:0.00000]
+    balance = text[25:len(text)-1]
+    return float(balance)
+
 def create_account(x):
     r = requests.post('http://' + getauthenticationservice() + '/api/createAccount', data='name='+x)
     return r
@@ -79,3 +84,10 @@ def validatesession(x):
     r = requests.post('http://' + getauthenticationservice() + '/api/validateSession', data='sessionkey='+x)
     return r
 
+def enquirebalance(x):
+    r = requests.post('http://' + gettransactionservice() + '/api/account', data='sessionkey='+x)
+    return r
+
+def transfer(x,y):
+    r = requests.post('http://' + gettransactionservice() + '/api/account/transfer', data='sessionkey='+x+",amount="+str(y))
+    return r
