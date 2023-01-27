@@ -28,6 +28,8 @@ import com.richard.transactionservice.process.AccountSynchronizer;
 import com.richard.transactionservice.process.AccountSynchronizerImpl;
 import com.richard.transactionservice.process.AccountTransferRequestIdGenerator;
 import com.richard.transactionservice.process.AccountTransferRequestIdGeneratorImpl;
+import com.richard.transactionservice.process.AdminMonitor;
+import com.richard.transactionservice.process.AdminMonitorImpl;
 
 public class TransactionserviceAppResourceImpl implements TransactionserviceAppResource {
 	private Logger logger = LoggerFactory.getLogger(TransactionserviceAppResourceImpl.class);
@@ -43,6 +45,7 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	private AuthenticationValidator authenticationValidator;
 	private AccountBalanceMaintenance accountBalanceMaintenance;
 	private HttpClient httpclient;
+	private AdminMonitor adminMonitor;
 	
 	private static TransactionserviceAppResourceImpl instance;
 	static {
@@ -52,6 +55,7 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	
 	public TransactionserviceAppResourceImpl() {
 		this.clock = new ClockImpl();
+		this.adminMonitor = new AdminMonitorImpl(clock);
 		this.accountTransferRequestIdGenerator = new AccountTransferRequestIdGeneratorImpl();
 		this.jdbcResourceMgr = JDBCResourceMgrImpl.getInstance();
 		this.accountDao = new AccountJDBCTemplate(jdbcResourceMgr);
@@ -59,14 +63,14 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 		this.accountBalanceDao = new AccountBalanceJDBCTemplate(jdbcResourceMgr);
 		this.accountTransferDao = new AccountTransferJDBCTemplate(jdbcResourceMgr);
 		this.accountSynchronizer = new AccountSynchronizerImpl(jdbcResourceMgr
-				, accountDao, accountSyncDao, accountBalanceDao);
+				, accountDao, accountSyncDao, accountBalanceDao, adminMonitor);
 		this.accountSyncMessagePayloadParser = new AccountSyncMessagePayloadParserImpl();
 		this.httpclient = prepareHttpClient();
 		Pair<String,Integer> authenticationHostAndPort = getAuthenticationHostAndPort();
 		this.authenticationValidator = new AuthenticationValidatorImpl(httpclient
 				, authenticationHostAndPort.getValue0(), authenticationHostAndPort.getValue1());
 		this.accountBalanceMaintenance = new AccountBalanceMaintenanceImpl(
-				clock, jdbcResourceMgr, accountBalanceDao, accountTransferDao);
+				clock, jdbcResourceMgr, accountBalanceDao, accountTransferDao);		
 	}
 
 	private Pair<String, Integer> getAuthenticationHostAndPort() {
@@ -168,6 +172,11 @@ public class TransactionserviceAppResourceImpl implements TransactionserviceAppR
 	@Override
 	public AccountTransferRequestIdGenerator getAccountTransferRequestIdGenerator() {
 		return accountTransferRequestIdGenerator;
+	}
+
+	@Override
+	public AdminMonitor getAdminMonitor() {
+		return adminMonitor;
 	}
 
 }

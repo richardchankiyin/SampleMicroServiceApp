@@ -34,6 +34,7 @@ class AccountSynchronizerImplTest {
 	private AccountDao acctDao;
 	private AccountSyncDao acctSyncDao;
 	private AccountBalanceDao acctBalanceDao;
+	private AdminMonitor adminMonitor;
 	private AccountSynchronizerImpl impl;
 	
 	private static final String SYSTEMERRORMSG = "[F001]System error";
@@ -44,7 +45,8 @@ class AccountSynchronizerImplTest {
 		acctDao = mock(AccountDao.class);
 		acctSyncDao = mock(AccountSyncDao.class);
 		acctBalanceDao = mock(AccountBalanceDao.class);
-		impl = new AccountSynchronizerImpl(jdbcResourceMgr, acctDao, acctSyncDao, acctBalanceDao);
+		adminMonitor = mock(AdminMonitor.class);
+		impl = new AccountSynchronizerImpl(jdbcResourceMgr, acctDao, acctSyncDao, acctBalanceDao, adminMonitor);
 	}
 	
 	@Test
@@ -81,6 +83,7 @@ class AccountSynchronizerImplTest {
 		when(acctSync.getAccountno()).thenReturn("000000000281980001");
 		when(acctSync.getMsgkey()).thenReturn("13a45560-38e5-44b8-999b-248b3077d63e");
 		when(acctSync.getPayload()).thenReturn("{\"msgKey\":\"13a45560-38e5-44b8-999b-248b3077d63e\",\"account\":{\"accountNo\":\"000000000281980001\",\"name\":\"Nancy\"}}");
+		when(adminMonitor.addDuplicateAccountSync(acctSync)).thenReturn(Triplet.with(true, "[A002]Duplicate Account Sync Message handled", acctSync));
 		String doneBy = "98883414-02bf-4a30-9441-f7f76e598e1d";
 		
 		when(acctSyncDao.getByMessageKey("13a45560-38e5-44b8-999b-248b3077d63e")).thenReturn(acctSync);

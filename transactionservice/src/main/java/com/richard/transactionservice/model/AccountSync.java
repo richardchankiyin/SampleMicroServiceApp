@@ -1,11 +1,16 @@
 package com.richard.transactionservice.model;
 
+import java.sql.Timestamp;
+
 public class AccountSync {
 	private String id;
 	private String msgkey;
 	private String accountno;
 	private String payload;
 	private String status;
+	private Timestamp uptime;
+
+
 	public static final String STATUS_SUCCESS = "S";
 	public static final String STATUS_FAILED = "F";
 	
@@ -47,7 +52,14 @@ public class AccountSync {
 		this.status = s;
 	}
 	
+	public Timestamp getUptime() {
+		return uptime;
+	}
+	public void setUptime(Timestamp uptime) {
+		this.uptime = uptime;
+	}
+	
 	public String toString() {
-		return String.format("AccountSync[id=%s,msgkey=%s,accountno=%s,payload=%s,status=%s]", id, msgkey, accountno, payload, status);
+		return String.format("AccountSync[id=%s,msgkey=%s,accountno=%s,payload=%s,status=%s,uptime=%s]", id, msgkey, accountno, payload, status, uptime);
 	}
 }

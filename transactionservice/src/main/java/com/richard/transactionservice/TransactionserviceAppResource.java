@@ -10,6 +10,7 @@ import com.richard.transactionservice.process.AccountBalanceMaintenance;
 import com.richard.transactionservice.process.AccountSyncMessagePayloadParser;
 import com.richard.transactionservice.process.AccountSynchronizer;
 import com.richard.transactionservice.process.AccountTransferRequestIdGenerator;
+import com.richard.transactionservice.process.AdminMonitor;
 
 public interface TransactionserviceAppResource {
 	public Clock getClock();
@@ -23,5 +24,5 @@ public interface TransactionserviceAppResource {
 	public AuthenticationValidator getAuthenticationValidator();
 	public AccountSyncMessagePayloadParser getAccountSyncMessagePayloadParser();
 	public AccountBalanceMaintenance getAccountBalanceMaintenance();
-
+	public AdminMonitor getAdminMonitor();
 }

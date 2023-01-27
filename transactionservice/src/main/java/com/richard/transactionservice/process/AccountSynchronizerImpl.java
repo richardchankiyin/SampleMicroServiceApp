@@ -25,13 +25,15 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 	private AccountDao accountDao;
 	private AccountSyncDao accountSyncDao;
 	private AccountBalanceDao accountBalanceDao;
+	private AdminMonitor adminMonitor;
 	
 	public AccountSynchronizerImpl(JDBCResourceMgr jdbcresourcemgr, AccountDao accountDao
-			, AccountSyncDao accountSyncDao, AccountBalanceDao accountBalanceDao) {
+			, AccountSyncDao accountSyncDao, AccountBalanceDao accountBalanceDao, AdminMonitor adminMonitor) {
 		this.jdbcresourcemgr = jdbcresourcemgr;
 		this.accountDao = accountDao;
 		this.accountSyncDao = accountSyncDao;
 		this.accountBalanceDao = accountBalanceDao;
+		this.adminMonitor = adminMonitor;
 	}
 
 	@Override
@@ -58,6 +60,9 @@ public class AccountSynchronizerImpl implements AccountSynchronizer {
 			existingItem = accountSyncDao.getByMessageKey(syncItem.getMsgkey());
 			logger.debug("existing accountsync entry: {}", existingItem);
 			if (existingItem != null) {
+				Triplet<Boolean, String, AccountSync> handleResult = 
+						adminMonitor.addDuplicateAccountSync(existingItem);
+				logger.info("duplicate account sync entry found and handled: {}", handleResult);
 				throw new IllegalStateException("existing accountsync entry found");
 			}
 		} catch (IllegalStateException ie) {

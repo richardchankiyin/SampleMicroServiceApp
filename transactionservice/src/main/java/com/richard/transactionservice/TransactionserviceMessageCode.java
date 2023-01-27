@@ -27,6 +27,13 @@ public class TransactionserviceMessageCode {
 		code2Message.put("M005", "Transfer Amount not accepted");
 		code2Message.put("M006", "Transfer rejected");
 		code2Message.put("M007", "Transfer complete");
+		
+		
+		// admin message
+		code2Message.put("A001", "Service is ready");
+		code2Message.put("A002", "Duplicate Account Sync Message handled");
+		code2Message.put("A003", "No duplicate account sync found");
+		code2Message.put("A004", "Duplicate account sync found");
 	}
 	
 	public String getMessage(String code) {

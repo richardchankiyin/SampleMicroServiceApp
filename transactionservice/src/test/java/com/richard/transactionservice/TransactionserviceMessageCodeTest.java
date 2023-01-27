@@ -72,4 +72,25 @@ class TransactionserviceMessageCodeTest {
 	void testM007() {
 		assertEquals("[M007]Transfer complete", msgCode.getMessage("M007"));
 	}
+	
+	@Test
+	void testA001() {
+		assertEquals("[A001]Service is ready", msgCode.getMessage("A001"));
+	}
+	
+	@Test
+	void testA002() {
+		assertEquals("[A002]Duplicate Account Sync Message handled", msgCode.getMessage("A002"));
+	}
+	
+	@Test
+	void testA003() {
+		assertEquals("[A003]No duplicate account sync found", msgCode.getMessage("A003"));
+	}
+	
+	@Test
+	void testA004() {
+		assertEquals("[A004]Duplicate account sync found", msgCode.getMessage("A004"));
+	}
+	
 }
