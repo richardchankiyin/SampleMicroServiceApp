@@ -2,4 +2,4 @@ requests
 mysql-connector-python
 pytest
 pytest-html
-
+pika
