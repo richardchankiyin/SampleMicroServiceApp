@@ -38,3 +38,21 @@ Analysis
 - 2b Multiple login with the same account is not allowed and old sessions should be kicked out
 - 3a using Transaction Service /api/account with prior authentication done in Authentication Service
 - 3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service
+
+Solution
+==========
+##Tech Stack
+- os: linux/mac (or Windows with bash)
+- mava 11
+- maven
+- docker and docker-compose (as containers of rabbitmq and mysql instances)
+- python3 (for integration test purpose, optional)
+
+##Major open-source libraries
+- Spring boot 2.7.7
+- mysql-connector
+- org.apache.commons common-lang3
+- javatuples
+- com.googlecode.json-simple json-simple
+- junit 5
+- mockito (for junit mocking purpose)
