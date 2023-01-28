@@ -211,3 +211,23 @@ c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exe
 - above command will be able to access the mysql interactive mode
 - copy content of create_grant_user.sql, create_table_account.sql, create_table_accountsync.sql, create_table_accountlogin.sql under authenticationservice folder
 - after running we can post check by running below commands
+```
+c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A -e "select User,Host from mysql.user where User='app' and Host='%'"
++------+------+
+| User | Host |
++------+------+
+| app  | %    |
++------+------+
+```
+
+```
+c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A -e "show tables;"
++-----------------+
+| Tables_in_test  |
++-----------------+
+| account         |
+| accountbalance  |
+| accountsync     |
+| accounttransfer |
++-----------------+
+```
