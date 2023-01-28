@@ -392,5 +392,13 @@ successful
 ### Requirement Tracebility by test case
 Requirement  | Test Case
 ------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+1a using Authentication Service /api/createAccount to create account  | Content Cell
+1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background
+  | Content Cell
+1c Authentication database and Transaction Service database are separated | x
+1d Account Synchronization success and fail tasks are being recorded in database | x
+1e Account Synchronization should be idempotent which means same task should not run twice | x
+2a using Authentication Service /api/login to login | x
+2b Multiple login with the same account is not allowed and old sessions should be kicked out | x
+3a using Transaction Service /api/account with prior authentication done in Authentication Service | x
+3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | x
