@@ -85,6 +85,21 @@ def test_enquire_init_balance():
     balance = parsereturnstringfromenquirebalance(text)
     assert(0.0==balance)
 
+def test_enquire_balance_after_logout_failed():
+    name='tebalf1'
+    r = createaccountandlogin(name)
+    account = r[0]
+    sessionkey = r[1]
+    r = logout(sessionkey)
+    text = r.text
+    log.info('returned text %s', text)
+    assert(r.status_code == 200)
+    r = enquirebalance(sessionkey) 
+    text = r.text
+    log.info('returned text %s', text)
+    assert(r.status_code == 200)
+    assert(text.startswith('[M002]'))
+
 def test_transfer_deposit_then_enquire_balance():
     name='ttdteb1'
     r = createaccountandlogin(name)

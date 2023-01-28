@@ -191,6 +191,10 @@ def login(x):
     r = loginwithpasswd(x,'notsecurepassword')
     return r
 
+def logout(x):
+    r = requests.post('http://' + getauthenticationservice() + '/api/logout', data='sessionkey='+x)
+    return r
+
 def validatesession(x):
     r = requests.post('http://' + getauthenticationservice() + '/api/validateSession', data='sessionkey='+x)
     return r
