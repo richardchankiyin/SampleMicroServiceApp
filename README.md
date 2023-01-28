@@ -333,3 +333,17 @@ richard@richard-linux-mint:~/asklora/repo/SampleMicroServiceApp/transactionservi
 2023-01-28 16:15:21.229  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : Started TransactionserviceApplication in 2.274 seconds (JVM running for 2.632)
 ```
 
+Test
+====
+## Unit Test
+- using maven install feature to run unit tests of authenticationservice and transactionservice
+
+## Integration Test
+- setup python venv (https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
+- source venv
+- go to testcases folder and run below to install required packages
+```
+pip install -r requirements.txt
+```
+- ./run_all.sh will bring up applications, run cases and tear down (***Remarks: all data in db and mq will be purged, if you want to keep data please backup or you can choose separate db instances/db for running applications other than this test) 
+
