@@ -154,3 +154,24 @@ i   - sample: x=iamadmin;y=$1; curl -s http://localhost:8083/api/admin/retrieveD
        - [A003]No duplicate account sync found
        - A004 Duplicate account sync found with message detail. Example: [A004]Duplicate account sync found[msgkey=0268ddb2-4453-4523-bb0a-9be27f88b0b7,accountno=000000023832080006,payload={"msgKey":"0268ddb2-4453-4523-bb0a-9be27f88b0b7","account":{"accountNo":"000000023832080006","name":"tai1"}},time=2023-01-28 14:00:28.211]
        - [A001]Service is ready
+
+Build
+=====
+## Setup Rabbitmq
+- go to directory dockerimages/rabbitmq and type command "docker-compose up -d"
+- run command: c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin declare queue name=accountsync durable=true (can be found at authenticationservice/setup_mq.sh)
+- post check command and expected output:
+   - c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin list queues
++-------------+----------+
+|    name     | messages |
++-------------+----------+
+| accountsync | 0        |
++-------------+----------+
+
+
+## Setup Authentication Service mysql
+- go to directory dockerimages/authenticationservicedb and type command "docker-compose up -d"
+- run command: c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A 
+- above command will be able to access the mysql interactive mode
+- copy content of create_grant_user.sql, create_table_account.sql, create_table_accountsync.sql, create_table_accountlogin.sql under authenticationservice folder
+- after running we can post check by running below commands
