@@ -294,6 +294,7 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 
 Run
 =====
+## Normal Run
 - please make sure docker images are all up. 
 ```
 docker container ls
@@ -332,6 +333,17 @@ richard@richard-linux-mint:~/asklora/repo/SampleMicroServiceApp/transactionservi
 2023-01-28 16:15:21.187  INFO 46373 --- [           main] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#511816c0:0/SimpleConnection@3f36b447 [delegate=amqp://guest@127.0.0.1:25672/, localPort= 32968]
 2023-01-28 16:15:21.228  INFO 46373 --- [   scheduling-1] c.r.t.TransactionserviceScheduledTasks   : This is a heart beat activity
 2023-01-28 16:15:21.229  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : Started TransactionserviceApplication in 2.274 seconds (JVM running for 2.632)
+```
+## Special Setting
+- It is common to change db url and mq host/ports. The following system.properties could be changed
+```
+datasource.driver=com.mysql.cj.jdbc.Driver
+datasource.url=jdbc:mysql://localhost:23306/test?useSSL=FALSE
+datasource.username=app
+datasource.password=apppass
+
+messagingconnection.host=localhost
+messagingconnection.port=25672
 ```
 
 Test
