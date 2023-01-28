@@ -88,3 +88,5 @@ for account synchronization
 - Authentication Service
   - /api/createAccount: To create account by providing name
     - sample: x=$1; curl -s http://localhost:8082/api/createAccount -X POST -H 'application/json' --data-raw "name=${x}" (could be found at authenticationservice/create_account_sample.sh)
+    - return message:
+       - M001 Account created successfully with account no generated. Example: [M001]Account created successfully[Account No:000000023796100001]
