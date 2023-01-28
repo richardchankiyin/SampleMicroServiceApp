@@ -56,3 +56,12 @@ Solution
 - com.googlecode.json-simple json-simple
 - junit 5
 - mockito (for junit mocking purpose)
+
+## Architectural Design
+- Authentication Service and Transaction Service are two individually spring boot application. Each of them is connecting to its own mysql instance
+- Rabbitmq is bridging two services. Authentication service will send message to a predefined queue and Transaction Service will listen to the queue
+for account synchronization
+- Authentication Service will provide validateSession api for Transaction Service to verify authentication done before
+- Authentication Service will provide account creation and login apis. Transaction Service will provide account balance enquiry and transfer apis
+- Authentication Service db will have account, accountsync and accountloginsession tables 
+- Transaction Service db will have account, accountsync, accountbalance and accounttransfer tables
