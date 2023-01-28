@@ -205,11 +205,37 @@ c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exe
 | accountsync | 0        |  
 +-------------+----------+  
 ```
+
 ## Setup Authentication Service mysql
 - go to directory dockerimages/authenticationservicedb and type command "docker-compose up -d"
+- run command: c=$(docker container ls | grep authenticationservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A 
+- above command will be able to access the mysql interactive mode
+- copy content of create_grant_user.sql, create_table_account.sql, create_table_accountsync.sql and create_table_accountloginsession.sql under authenticationservice folder 
+- after running we can post check by running below commands
+```
+c=$(docker container ls | grep authenticationservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A -e "select User,Host from mysql.user where User='app' and Host='%'"
++------+------+
+| User | Host |
++------+------+
+| app  | %    |
++------+------+
+```
+```
+c=$(docker container ls | grep authenticationservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A -e "show tables"
++---------------------+
+| Tables_in_test      |
++---------------------+
+| account             |
+| accountloginsession |
+| accountsync         |
++---------------------+
+```
+
+## Setup Transaction Service mysql
+- go to directory dockerimages/transactionservicedb and type command "docker-compose up -d"
 - run command: c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A 
 - above command will be able to access the mysql interactive mode
-- copy content of create_grant_user.sql, create_table_account.sql, create_table_accountsync.sql, create_table_accountlogin.sql under authenticationservice folder
+- copy content of create_grant_user.sql, create_table_account.sql, create_table_accountsync.sql, create_table_accountbalance.sql and create_table_accounttransfer.sql under transactionservice folder 
 - after running we can post check by running below commands
 ```
 c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A -e "select User,Host from mysql.user where User='app' and Host='%'"
@@ -231,3 +257,5 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 | accounttransfer |
 +-----------------+
 ```
+
+
