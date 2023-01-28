@@ -158,10 +158,19 @@ i   - sample: x=iamadmin;y=$1; curl -s http://localhost:8083/api/admin/retrieveD
 Build
 =====
 ## Setup Rabbitmq
-- go to directory dockerimages/rabbitmq and type command "docker-compose up -d"
-- run command: c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin declare queue name=accountsync durable=true (can be found at authenticationservice/setup_mq.sh)
+- go to directory dockerimages/rabbitmq and type command:
+```
+docker-compose up -d
+```
+- run command: 
+```
+c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin declare queue name=accountsync durable=true 
+```
+(can be found at authenticationservice/setup_mq.sh)
 - post check command and expected output:
-   - c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin list queues
+```
+c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin list queues
+```
 ```
 +-------------+----------+  
 |    name     | messages |  
