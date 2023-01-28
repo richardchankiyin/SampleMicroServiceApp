@@ -24,11 +24,11 @@ The worker to synchronize the user data should be idempotent. We record the work
 
 Analysis
 ========
-# Architectural Requirements
+## Architectural Requirements
 - Microservice architecture with message queue about background synchronization
 - Authentication and Transaction are two different services (should have their own runtime and database)
 
-# Functional and Non-functional Requirements 
+## Functional and Non-functional Requirements 
 - 1a using Authentication Service /api/createAccount to create account 
 - 1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background 
 - 1c Authentication database and Transaction Service database are separated
