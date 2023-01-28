@@ -387,4 +387,5 @@ PASSED test_recovery.py::test_create_account_sync_after_transaction_recovery
 successful
 ```
 
+- test_authenticationservice_report.html, test_recovery_report.html and test_transactionservice_report.html are report files output. 
 
