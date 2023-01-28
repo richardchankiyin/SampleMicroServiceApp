@@ -162,12 +162,13 @@ Build
 - run command: c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin declare queue name=accountsync durable=true (can be found at authenticationservice/setup_mq.sh)
 - post check command and expected output:
    - c=$(docker container ls | grep rabbitmq_rabbitmq | awk '{print $1}'); docker exec -it $c rabbitmqadmin list queues
+```
         +-------------+----------+  
         |    name     | messages |  
         +-------------+----------+  
         | accountsync | 0        |  
         +-------------+----------+  
-
+```
 ## Setup Authentication Service mysql
 - go to directory dockerimages/authenticationservicedb and type command "docker-compose up -d"
 - run command: c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker exec -it $c mysql -uroot -proot test -A 
