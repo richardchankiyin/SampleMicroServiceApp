@@ -6,7 +6,7 @@ import pika
 import os
 
 log = logging.getLogger()
-waitup=10
+waitup=5
 
 def bringupauthenticationservice():
     c = 'java -Dsession.valid.duration.millisecond=300000 -Duser.timezone=UTC -Dlogging.level.com.richard.authenticationservice=DEBUG -Dserver.port=8082 -jar ../authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar &'
