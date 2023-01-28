@@ -76,13 +76,14 @@ for account synchronization
 - 35672 (Rabbitmq admin port mapped to docker rabbitmq 15672) 
 
 ## Source Code explanation
-- com.richard.authenticateservice and com.richard.transactionservice are the core packages. Application restapis are provided by AuthenticationserviceController and TransactionserviceController
-- AuthenticationserviceScheduledTasks and TransactionserviceScheduledTasks are controlling the implementation of scheduled tasks. These scheduled tasks are the background tasks
-- com.richard.authenticationservice.db and com.richard.transactionservice.db are controlling the implementation of database related activities
-- com.richard.authenticationservice.model and com.richard.transactionservice.model are POJO holding data
-- com.richard.authenticationservice.msg and com.richard.transactionservice.msg are controlling the implementation of messaging queue activities
-- com.richard.authenticationservice.process and com.richard.transactionservice.process are controlling the implementation of higher level domain logic. They will have domain level validation performed and call db/mq for data persistency or messaging
-- com.richard.transactionservice.api is controlling the restapi calls to external service (i.e. Authentication Service)
+- authenticationservice and transactionservice
+  - com.richard.authenticateservice and com.richard.transactionservice are the core packages. Application restapis are provided by AuthenticationserviceController and TransactionserviceController
+  - AuthenticationserviceScheduledTasks and TransactionserviceScheduledTasks are controlling the implementation of scheduled tasks. These scheduled tasks are the background tasks
+  - com.richard.authenticationservice.db and com.richard.transactionservice.db are controlling the implementation of database related activities
+  - com.richard.authenticationservice.model and com.richard.transactionservice.model are POJO holding data
+  - com.richard.authenticationservice.msg and com.richard.transactionservice.msg are controlling the implementation of messaging queue activities
+  - com.richard.authenticationservice.process and com.richard.transactionservice.process are controlling the implementation of higher level domain logic. They will have domain level validation performed and call db/mq for data persistency or messaging
+  - com.richard.transactionservice.api is controlling the restapi calls to external service (i.e. Authentication Service)
 
 ## API explanation
 - Authentication Service
