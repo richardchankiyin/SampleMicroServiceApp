@@ -95,24 +95,24 @@ for account synchronization
 ## API explanation
 - Authentication Service
   - /api/createAccount: To create account by providing name
-    - sample: (could be found at authenticationservice/create_account_sample.sh)
-```
-x=$1; curl -s http://localhost:8082/api/createAccount -X POST -H 'application/json' --data-raw "name=${x}" 
-```
     - return messages:
        - M001 Account created successfully with account no generated. Example: [M001]Account created successfully[Account No:000000023796100001]
        - E001 Wrong Request Content. Example: [E001]Wrong Request Content
        - F001 System error. To be seen when the application is running wrong. Possible reasons could be database/mq/file system error
+    - sample: (could be found at authenticationservice/create_account_sample.sh)
+```
+x=$1; curl -s http://localhost:8082/api/createAccount -X POST -H 'application/json' --data-raw "name=${x}" 
+```
 
   - /api/login: To login by providing accountno and password (for simplicity password is static. Value being used: notsecurepassword)
-    - sample: (could be found at authenticationservice/login_account_sample.sh)
-```
-x=$1;y=notsecurepassword; curl -s http://localhost:8082/api/login -X POST -H 'application/json' --data "accountno=${x},password=${y}" 
-```
     - return messages:
        - M004 Login successfully with session key. Example: [M004]Login successfully[Session:8e0838bb-be3c-4cc1-a774-4ca7daf621f6]
        - E003 Unable to login. That could be application issues. Example: [E003]Unable to login
        - E004 Incorrect Login Info. Example: [E004]Incorrect Login Info
+    - sample: (could be found at authenticationservice/login_account_sample.sh)
+```
+x=$1;y=notsecurepassword; curl -s http://localhost:8082/api/login -X POST -H 'application/json' --data "accountno=${x},password=${y}" 
+```
 
   - /api/logout: To logout by providing sessionkey obtained after login
     - sample: x=$1; curl -s http://localhost:8082/api/logout -X POST -H 'application/json' --data "sessionkey=${x}" (could be found at authenticationservice/logout_account_sample.sh) 
