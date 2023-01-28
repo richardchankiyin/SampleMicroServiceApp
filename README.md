@@ -120,3 +120,29 @@ for account synchronization
     - sample: x=iamadmin; curl -s http://localhost:8082/api/admin/checkStatus -X POST -H 'application/json' --data "password=${x}" (could be found at authenticationservice/admin_check_status.sh)
     - return message:
        - [A001]Service is ready
+
+- Transaction Service
+  - /api/account: To retrieve account balance by providing sessionkey after login
+    - sample: x=$1; curl -s http://localhost:8083/api/account -X POST -H 'application/json' --data "sessionkey=${x}" (could be found at transactionservice/enquire_balance.sh)
+    - return messages:
+       - M003 Authorized with balance. Example: [M003]Authorized[balance:250.50000]
+       - M002 Unauthorized. Example: [M002]Unauthorized
+
+  - /api/account/transfer: To transfer from/to account by providing sessionkey after login and amount (-ve as withdraw and +ve as deposit)
+    - sample: x=$1; y=$2; curl -s http://localhost:8083/api/account/transfer -X POST -H 'application/json' --data "sessionkey=${x},amount=${y}" (could be found at transactionservice/transfer.sh)
+    - return messages:
+       - M007 Transfer complete with requestid and current balance returned. Example:[M007]Transfer complete[requestid=2914f645-5386-4dc8-94d5-5953711749de,balance=250.50000]
+       - M006 Transfer rejected with requestid returned. Example: [M006]Transfer rejected[requestid=2914f645-5386-4dc8-94d5-5953711749de]
+       - M002 Unauthorized. Example: [M002]Unauthorized
+
+  - /api/admin/checkStatus: To check the status of the application by providing admin password (for simplicity static password iamadmin is being used)
+    - sample: x=iamadmin; curl -s http://localhost:8083/api/admin/checkStatus -X POST -H 'application/json' --data "password=${x}" (could be found at transactionservice/admin_check_status.sh)
+    - return message:
+       - [A001]Service is ready
+
+  - /api/admin/retrieveDuplicateAcctSync: To check the status of the application by providing admin password and messagekey (for simplicity static password iamadmin is being used)
+i   - sample: x=iamadmin;y=$1; curl -s http://localhost:8083/api/admin/retrieveDuplicateAcctSync -X POST -H 'application/json' --data "password=${x},msgkey=${y}" (could be found at transactionservice/admin_retrieve_duplicateacctsync.sh)
+    - return messages:
+       - [A003]No duplicate account sync found
+       - A004 Duplicate account sync found with message detail. Example: [A004]Duplicate account sync found[msgkey=0268ddb2-4453-4523-bb0a-9be27f88b0b7,accountno=000000023832080006,payload={"msgKey":"0268ddb2-4453-4523-bb0a-9be27f88b0b7","account":{"accountNo":"000000023832080006","name":"tai1"}},time=2023-01-28 14:00:28.211]
+       - [A001]Service is ready
