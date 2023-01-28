@@ -66,3 +66,12 @@ for account synchronization
 - Authentication Service and Transaction Service will provide admin apis for status checking and account sync duplication checking protected by password
 - Authentication Service db will have account, accountsync and accountloginsession tables 
 - Transaction Service db will have account, accountsync, accountbalance and accounttransfer tables
+
+## Source Code explanation
+- com.richard.authenticateservice and com.richard.transactionservice are the core packages. Application restapis are provided by AuthenticationserviceController and TransactionserviceController
+- AuthenticationserviceScheduledTasks and TransactionserviceScheduledTasks are controlling the implementation of scheduled tasks. These scheduled tasks are the background tasks
+- com.richard.authenticationservice.db and com.richard.transactionservice.db are controlling the implementation of database related activities
+- com.richard.authenticationservice.model and com.richard.transactionservice.model are POJO holding data
+- com.richard.authenticationservice.msg and com.richard.transactionservice.msg are controlling the implementation of messaging queue activities
+- com.richard.authenticationservice.process and com.richard.transactionservice.process are controlling the implementation of higher level domain logic. They will have domain level validation performed and call db/mq for data persistency or messaging
+- com.richard.transactionservice.api is controlling the restapi calls to external service (i.e. Authentication Service)
