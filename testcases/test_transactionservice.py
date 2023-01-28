@@ -166,3 +166,28 @@ def test_transfer_withdraw_then_enquire_balance():
     assert(text.startswith('[M003]'))
     balance = parsereturnstringfromenquirebalance(text)
     assert(150.2==balance)
+
+def test_transfer_after_logout_failed():
+    name='ttalf1'
+    r = createaccountandlogin(name)
+    account = r[0]
+    sessionkey = r[1]
+    r = enquirebalance(sessionkey) 
+    text = r.text
+    log.info('returned text %s', text)
+    assert(r.status_code == 200)
+    assert(text.startswith('[M003]'))
+    balance = parsereturnstringfromenquirebalance(text)
+    assert(0.0==balance)
+
+    r = logout(sessionkey)
+    text = r.text
+    log.info('returned text %s', text)
+    assert(r.status_code == 200)
+
+    #deposit
+    r = transfer(sessionkey,250.5)
+    text = r.text
+    log.info('returned text %s', text)
+    assert(r.status_code == 200)
+    assert(text.startswith('[M002]'))
