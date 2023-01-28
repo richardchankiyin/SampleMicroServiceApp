@@ -115,25 +115,34 @@ x=$1;y=notsecurepassword; curl -s http://localhost:8082/api/login -X POST -H 'ap
 ```
 
   - /api/logout: To logout by providing sessionkey obtained after login
-    - sample: x=$1; curl -s http://localhost:8082/api/logout -X POST -H 'application/json' --data "sessionkey=${x}" (could be found at authenticationservice/logout_account_sample.sh) 
     - return messages:
        - M005 Logout successfully. Example: [M005]Logout successfully
        - W002 Attempt to logout using invalid session key. That could happen when another login session kicks the session key out. Or the session key expires. Example: [W002]Attempt to logout using invalid session key
        - E001 Wrong Request Content. Example: [E001]Wrong Request Content
        - F001 System error. To be seen when the application is running wrong. Possible reasons could be database/mq/file system error
+    - sample: (could be found at authenticationservice/logout_account_sample.sh)
+```
+x=$1; curl -s http://localhost:8082/api/logout -X POST -H 'application/json' --data "sessionkey=${x}"  
+```
 
   - /api/validateSession: To validate session by providing sessionkey after login
-    - sample: x=$1; curl -s http://localhost:8082/api/validateSession -X POST -H 'application/json' --data "sessionkey=${x}" (could be found at authenticationservice/validate_session_sample.sh)
     - return messages:
        - M007 Valid session with accountno returned. Example: [M007]Valid session[accountno=000000023796100003]
        - M006 Invalid session. Example [M006]Invalid session
        - E001 Wrong Request Content. Example: [E001]Wrong Request Content
        - F001 System error. To be seen when the application is running wrong. Possible reasons could be database/mq/file system error
+    - sample: (could be found at authenticationservice/validate_session_sample.sh)
+```
+x=$1; curl -s http://localhost:8082/api/validateSession -X POST -H 'application/json' --data "sessionkey=${x}" 
+```
 
   - /api/admin/checkStatus: To check the status of the application by providing admin password (for simplicity static password iamadmin is being used)
-    - sample: x=iamadmin; curl -s http://localhost:8082/api/admin/checkStatus -X POST -H 'application/json' --data "password=${x}" (could be found at authenticationservice/admin_check_status.sh)
     - return message:
        - [A001]Service is ready
+    - sample: (could be found at authenticationservice/admin_check_status.sh)
+```
+x=iamadmin; curl -s http://localhost:8082/api/admin/checkStatus -X POST -H 'application/json' --data "password=${x}" 
+```
 
 - Transaction Service
   - /api/account: To retrieve account balance by providing sessionkey after login
