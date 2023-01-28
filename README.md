@@ -272,3 +272,19 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 [INFO] ------------------------------------------------------------------------
 
 ``` 
+
+## Setup Transaction Service Spring Boot
+- cd transactionservice folder and type "mvn clean install" and see below to confirm build successful.
+```
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ transactionservice ---
+[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar to /newhome/richard/.m2/repository/com/richard/transactionservice/0.0.1-SNAPSHOT/transactionservice-0.0.1-SNAPSHOT.jar
+[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice/pom.xml to /newhome/richard/.m2/repository/com/richard/transactionservice/0.0.1-SNAPSHOT/transactionservice-0.0.1-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.120 s
+[INFO] Finished at: 2023-01-29T00:07:05+08:00
+[INFO] ------------------------------------------------------------------------
+
+```
+
