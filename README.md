@@ -85,6 +85,13 @@ for account synchronization
   - com.richard.authenticationservice.process and com.richard.transactionservice.process are controlling the implementation of higher level domain logic. They will have domain level validation performed and call db/mq for data persistency or messaging
   - com.richard.transactionservice.api is controlling the restapi calls to external service (i.e. Authentication Service)
 
+- dockerimages
+  - authenticationservicedb and transactionservicedb are docker-compose files for mysql docker containers
+  - rabbitmq is docker-compose file for rabbitmq docker container
+
+- testcases
+  - accountable for preparing python venv (requirements.txt), setup, run cases and teardown relying on python3
+
 ## API explanation
 - Authentication Service
   - /api/createAccount: To create account by providing name
