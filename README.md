@@ -390,14 +390,14 @@ successful
 - test_authenticationservice_report.html, test_recovery_report.html and test_transactionservice_report.html are report files output. 
 
 ### Requirement Tracebility by test case
-Requirement  | Test Case
+Requirement  | Test Cases
 ------------- | -------------
-1a using Authentication Service /api/createAccount to create account  | Content Cell
-1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background | x
-1c Authentication database and Transaction Service database are separated | x
-1d Account Synchronization success and fail tasks are being recorded in database | x
-1e Account Synchronization should be idempotent which means same task should not run twice | x
-2a using Authentication Service /api/login to login | x
-2b Multiple login with the same account is not allowed and old sessions should be kicked out | x
-3a using Transaction Service /api/account with prior authentication done in Authentication Service | x
-3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | x
+1a using Authentication Service /api/createAccount to create account  | test_authenticationservice.py::test_create_account_successfully, test_authenticationservice.py::test_create_account_failed
+1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background | test_authenticationservice.py::test_create_account_sync_withdb_successfully
+1c Authentication database and Transaction Service database are separated | test_authenticationservice.py::test_create_account_successfully, test_authenticationservice.py::test_create_account_failed
+1d Account Synchronization success and fail tasks are being recorded in database | test_recovery.py::test_create_account_sync_after_authentication_recovery
+1e Account Synchronization should be idempotent which means same task should not run twice | test_transactionservice.py::test_accountsync_idempotent
+2a using Authentication Service /api/login to login | test_authenticationservice.py::test_login_successfully, test_authenticationservice.py::test_login_failed_accountnotexist, test_authenticationservice.py::test_login_failed_wrong_password
+2b Multiple login with the same account is not allowed and old sessions should be kicked out | test_authenticationservice.py::test_login_kick_out_previous_session
+3a using Transaction Service /api/account with prior authentication done in Authentication Service | test_transactionservice.py::test_enquire_init_balance, test_transactionservice.py::test_enquire_balance_after_logout_failed  
+3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | test_transactionservice.py::test_transfer_deposit_then_enquire_balance, test_transactionservice.py::test_transfer_withdraw_then_enquire_balance
