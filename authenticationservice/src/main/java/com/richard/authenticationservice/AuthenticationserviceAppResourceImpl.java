@@ -59,7 +59,7 @@ public class AuthenticationserviceAppResourceImpl implements Authenticationservi
 		// below day1 value should not be changed as accountno format
 		// will rely on below minute diff result
 		LocalDateTime day1 = LocalDateTime.of(2023, 1, 1, 0, 0);
-		long daydiff = ChronoUnit.MINUTES.between(day1, now);
+		long daydiff = ChronoUnit.SECONDS.between(day1, now);
 		return new AccountSequenceImpl(maxSequence, daydiff);
 	}
 	

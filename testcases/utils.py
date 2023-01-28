@@ -48,6 +48,15 @@ def killtransactionservice():
     c = "jcmd | grep 'transactionservice' | awk '{print $1}' | xargs kill -9"
     os.system(c)
 
+def publishmessage(msg):
+    conn = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',port=25672))
+    channel = conn.channel()
+    try:
+        channel.basic_publish(exchange='', routing_key='accountsync', body=msg)
+    finally:
+        channel.close()
+        conn.close()
+
 def purgerabbitmq():
     conn = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',port=25672))
     channel = conn.channel()
@@ -110,6 +119,20 @@ def getaccountsyncfromdb(accountno, h, p, u, pw, dbname):
         cursor.close()
         conn.close()
 
+def getaccountsyncincluptimefromdb(accountno, h, p, u, pw, dbname):
+    conn = mysql.connector.connect(host=h, port=p, user=u, password=pw, database=dbname)
+    cursor = conn.cursor()
+    try:
+        cursor.execute('select msgkey, accountno, payload, status, uptime from accountsync where accountno=' + accountno)
+        r = cursor.fetchall()
+        log.debug('getaccountsyncfrom db %s', r)
+        return r 
+    finally:
+        cursor.close()
+        conn.close()
+
+def getaccountsyncincluptimefromtransactiondb(accountno):
+    return getaccountsyncincluptimefromdb(accountno, 'localhost', 33306, 'app', 'apppass', 'test')
 
 def getaccountsyncfromauthenticationdb(accountno):
     return getaccountsyncfromdb(accountno, 'localhost', 23306, 'app', 'apppass', 'test')
@@ -182,4 +205,9 @@ def transfer(x,y):
 def checkstatus(service):
     x = 'iamadmin'
     r = requests.post('http://' + service + '/api/admin/checkStatus', data='password='+x)
+    return r
+
+def retrieveduplicateacctsync(msgkey):
+    x = 'iamadmin'
+    r = requests.post('http://' + gettransactionservice() + '/api/admin/retrieveDuplicateAcctSync', data='password='+x+',msgkey='+msgkey)
     return r
