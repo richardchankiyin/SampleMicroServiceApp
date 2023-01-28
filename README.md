@@ -23,9 +23,17 @@ The worker to synchronize the user data should be idempotent. We record the work
 
 Analysis
 ========
-# Requirements Summary
+# Architectural Requirements
+- Microservice architecture with message queue about background synchronization
+- Authentication and Transaction are two different services (should have their own runtime and database)
+
+# Functional and Non-functional Requirements 
 - 1a using Authentication Service /api/createAccount to create account 
-- 1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service 
+- 1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background 
 - 1c Authentication database and Transaction Service database are separated
 - 1d Account Synchronization success and fail tasks are being recorded in database
-
+- 1e Account Synchronization should be idempotent which means same task should not run twice.
+- 2a using Authentication Service /api/login to login
+- 2b Multiple login with the same account is not allowed and old sessions should be kicked out
+- 3a using Transaction Service /api/account with prior authentication done in Authentication Service
+- 3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service
