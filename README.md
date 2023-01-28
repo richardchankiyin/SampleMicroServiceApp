@@ -85,4 +85,6 @@ for account synchronization
 - com.richard.transactionservice.api is controlling the restapi calls to external service (i.e. Authentication Service)
 
 ## API explanation
-
+- Authentication Service
+  - /api/createAccount: To create account by providing name
+    - sample: x=$1; curl -s http://localhost:8082/api/createAccount -X POST -H 'application/json' --data-raw "name=${x}" (could be found at authenticationservice/create_account_sample.sh)
