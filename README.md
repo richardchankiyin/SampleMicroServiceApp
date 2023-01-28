@@ -34,6 +34,7 @@ Analysis
 - 1c Authentication database and Transaction Service database are separated
 - 1d Account Synchronization success and fail tasks are being recorded in database
 - 1e Account Synchronization should be idempotent which means same task should not run twice.
+- 1f Account Synchronization should run again if it fails before
 - 2a using Authentication Service /api/login to login
 - 2b Multiple login with the same account is not allowed and old sessions should be kicked out
 - 3a using Transaction Service /api/account with prior authentication done in Authentication Service
@@ -389,7 +390,7 @@ successful
 
 - test_authenticationservice_report.html, test_recovery_report.html and test_transactionservice_report.html are report files output. 
 
-### Requirement Tracebility by test case
+### Requirement Tracebility by test cases
 Requirement  | Test Cases
 ------------- | -------------
 1a using Authentication Service /api/createAccount to create account  | test_authenticationservice.py::test_create_account_successfully, test_authenticationservice.py::test_create_account_failed
@@ -397,7 +398,16 @@ Requirement  | Test Cases
 1c Authentication database and Transaction Service database are separated | test_authenticationservice.py::test_create_account_successfully, test_authenticationservice.py::test_create_account_failed
 1d Account Synchronization success and fail tasks are being recorded in database | test_recovery.py::test_create_account_sync_after_authentication_recovery
 1e Account Synchronization should be idempotent which means same task should not run twice | test_transactionservice.py::test_accountsync_idempotent
+1f Account Synchronization should run again if it fails before | test_recovery.py::test_create_account_sync_after_authentication_recovery, test_recovery.py::test_create_account_sync_after_transaction_recovery
 2a using Authentication Service /api/login to login | test_authenticationservice.py::test_login_successfully, test_authenticationservice.py::test_login_failed_accountnotexist, test_authenticationservice.py::test_login_failed_wrong_password
 2b Multiple login with the same account is not allowed and old sessions should be kicked out | test_authenticationservice.py::test_login_kick_out_previous_session
 3a using Transaction Service /api/account with prior authentication done in Authentication Service | test_transactionservice.py::test_enquire_init_balance, test_transactionservice.py::test_enquire_balance_after_logout_failed  
 3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | test_transactionservice.py::test_transfer_deposit_then_enquire_balance, test_transactionservice.py::test_transfer_withdraw_then_enquire_balance
+
+Continuous Integration
+==============
+This repo is ready for continuous integration. A jenkins instance has been setup with information:
+- http://3.0.174.58/
+- login: guest/welcome
+- SampleMicroServiceApp shows maven build and unit test results
+- SampleMicroServiceApp_integration shows integration test results and reports
