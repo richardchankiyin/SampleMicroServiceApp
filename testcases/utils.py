@@ -6,18 +6,19 @@ import pika
 import os
 
 log = logging.getLogger()
+waitup=10
 
 def bringupauthenticationservice():
     c = 'java -Dsession.valid.duration.millisecond=300000 -Duser.timezone=UTC -Dlogging.level.com.richard.authenticationservice=DEBUG -Dserver.port=8082 -jar ../authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar &'
     os.system(c)
-    time.sleep(5)
+    time.sleep(waitup)
     r = checkstatus(getauthenticationservice())
     log.info('return text %s', r.text) 
 
 def bringuptransactionservice():
     c = 'java -Duser.timezone=UTC -Dlogging.level.com.richard.transactionservice=DEBUG -Dauthenticationservice.connect.host=localhost -Dauthenticationservice.connect.port=8082 -Dauthenticationservice.connect.timeout.millisecond=5000 -Dserver.port=8083 -jar ../transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar &'
     os.system(c)
-    time.sleep(5)
+    time.sleep(waitup)
     r = checkstatus(gettransactionservice())
     log.info('return text %s', r.text) 
 
@@ -25,14 +26,14 @@ def bringupfaultauthenticationservice():
     # failing by disconnecting rabbitmq through a wrong port no
     c = 'java -Dsession.valid.duration.millisecond=300000 -Dmessagingconnection.port=15672 -Duser.timezone=UTC -Dlogging.level.com.richard.authenticationservice=DEBUG -Dserver.port=8082 -jar ../authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar &'
     os.system(c)
-    time.sleep(5)
+    time.sleep(waitup)
     r = checkstatus(getauthenticationservice())
     log.info('return text %s', r.text) 
 
 def bringupfaulttransactionservice():
     c = 'java -Duser.timezone=UTC -Ddatasource.password=wrong -Dlogging.level.com.richard.transactionservice=DEBUG -Dauthenticationservice.connect.host=localhost -Dauthenticationservice.connect.port=8082 -Dauthenticationservice.connect.timeout.millisecond=5000 -Dserver.port=8083 -jar ../transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar &'
     os.system(c)
-    time.sleep(5)
+    time.sleep(waitup)
     r = checkstatus(gettransactionservice())
     log.info('return text %s', r.text) 
 
