@@ -41,14 +41,14 @@ Analysis
 
 Solution
 ==========
-##Tech Stack
+## Tech Stack
 - os: linux/mac (or Windows with bash)
 - mava 11
 - maven
 - docker and docker-compose (as containers of rabbitmq and mysql instances)
 - python3 (for integration test purpose, optional)
 
-##Major open-source libraries
+## Major open-source libraries
 - Spring boot 2.7.7
 - mysql-connector
 - org.apache.commons common-lang3
