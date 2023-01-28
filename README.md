@@ -63,5 +63,6 @@ Solution
 for account synchronization
 - Authentication Service will provide validateSession api for Transaction Service to verify authentication done before
 - Authentication Service will provide account creation and login apis. Transaction Service will provide account balance enquiry and transfer apis
+- Authentication Service and Transaction Service will provide admin apis for status checking and account sync duplication checking protected by password
 - Authentication Service db will have account, accountsync and accountloginsession tables 
 - Transaction Service db will have account, accountsync, accountbalance and accounttransfer tables
