@@ -389,3 +389,8 @@ successful
 
 - test_authenticationservice_report.html, test_recovery_report.html and test_transactionservice_report.html are report files output. 
 
+### Requirement Tracebility by test case
+Requirement  | Test Case
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
