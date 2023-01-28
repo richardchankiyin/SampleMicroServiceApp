@@ -67,6 +67,14 @@ for account synchronization
 - Authentication Service db will have account, accountsync and accountloginsession tables 
 - Transaction Service db will have account, accountsync, accountbalance and accounttransfer tables
 
+## TCP Ports To be used
+- 8082 (Authentication Service Spring Boot Server Port)
+- 8083 (Transaction Service Spring Boot Server Port)
+- 23306 (Authentication Service Mysql listening port mapped to docker mysql instance 3306)
+- 33306 (Transaction Service Mysql listening port mapped to docker mysql instance 3306)
+- 25672 (Rabbitmq connector listening port mapped to docker rabbitmq 5672)
+- 35672 (Rabbitmq admin port mapped to docker rabbitmq 15672) 
+
 ## Source Code explanation
 - com.richard.authenticateservice and com.richard.transactionservice are the core packages. Application restapis are provided by AuthenticationserviceController and TransactionserviceController
 - AuthenticationserviceScheduledTasks and TransactionserviceScheduledTasks are controlling the implementation of scheduled tasks. These scheduled tasks are the background tasks
@@ -75,3 +83,6 @@ for account synchronization
 - com.richard.authenticationservice.msg and com.richard.transactionservice.msg are controlling the implementation of messaging queue activities
 - com.richard.authenticationservice.process and com.richard.transactionservice.process are controlling the implementation of higher level domain logic. They will have domain level validation performed and call db/mq for data persistency or messaging
 - com.richard.transactionservice.api is controlling the restapi calls to external service (i.e. Authentication Service)
+
+## API explanation
+
