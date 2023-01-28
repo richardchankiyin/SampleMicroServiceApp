@@ -24,8 +24,8 @@ The worker to synchronize the user data should be idempotent. We record the work
 Analysis
 ========
 # Requirements Summary
-> 1a using Authentication Service /api/createAccount to create account 
-> 1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service 
-> 1c Authentication database and Transaction Service database are separated
-> 1d Account Synchronization success and fail tasks are being recorded in database
+- 1a using Authentication Service /api/createAccount to create account 
+- 1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service 
+- 1c Authentication database and Transaction Service database are separated
+- 1d Account Synchronization success and fail tasks are being recorded in database
 
