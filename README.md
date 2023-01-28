@@ -346,4 +346,45 @@ Test
 pip install -r requirements.txt
 ```
 - ./run_all.sh will bring up applications, run cases and tear down (***Remarks: all data in db and mq will be purged, if you want to keep data please backup or you can choose separate db instances/db for running applications other than this test) 
+- sample output:
+```
+2023-01-28 16:31:02.273 DEBUG 61836 --- [nio-8083-exec-1] c.r.t.TransactionserviceController       : checkStatus result: [true, [A001]Service is ready]
+--------------------------------------------------------------------------------------------------- Captured log call ----------------------------------------------------------------------------------------------------
+INFO     root:test_recovery.py:60 killing transaction service
+INFO     root:test_recovery.py:62 bringing up fault transaction service
+INFO     root:utils.py:38 return text [A001]Service is ready
+INFO     root:test_recovery.py:68 returned text [M001]Account created successfully[Account No:000000023922330001]
+INFO     root:test_recovery.py:72 accountno: 000000023922330001
+INFO     root:test_recovery.py:75 returned text [M004]Login successfully[Session:8252e340-a192-4332-af25-cc9067218e17]
+INFO     root:test_recovery.py:80 sessionkey 8252e340-a192-4332-af25-cc9067218e17
+INFO     root:test_recovery.py:83 returned text [M007]Valid session[accountno=000000023922330001]
+INFO     root:test_recovery.py:91 
+authenticationdb account r1: [('000000023922330001', 'tcasatr1')]
+transactiondb account r2:[]
+
+INFO     root:test_recovery.py:96 
+authenticationdb accountsync r1: [('22c4bc11-f19c-438f-9bbf-090de6373832', '000000023922330001', '{"msgKey":"22c4bc11-f19c-438f-9bbf-090de6373832","account":{"accountNo":"000000023922330001","name":"tcasatr1"}}', 'S')]
+transactiondb accountsync r2:[]
+
+INFO     root:test_recovery.py:99 killing fault transaction service
+INFO     root:test_recovery.py:101 bringing up transaction service
+INFO     root:utils.py:23 return text [A001]Service is ready
+INFO     root:test_recovery.py:106 
+authenticationdb account r1: [('000000023922330001', 'tcasatr1')]
+transactiondb account r2:[('000000023922330001', 'tcasatr1')]
+
+INFO     root:test_recovery.py:111 
+authenticationdb accountsync r1: [('22c4bc11-f19c-438f-9bbf-090de6373832', '000000023922330001', '{"msgKey":"22c4bc11-f19c-438f-9bbf-090de6373832","account":{"accountNo":"000000023922330001","name":"tcasatr1"}}', 'S')]
+transactiondb accountsync r2:[('22c4bc11-f19c-438f-9bbf-090de6373832', '000000023922330001', '{"msgKey":"22c4bc11-f19c-438f-9bbf-090de6373832","account":{"accountNo":"000000023922330001","name":"tcasatr1"}}', 'S')]
+-------------------------------------------------- generated html file: file:///newhome/richard/asklora/repo/SampleMicroServiceApp/testcases/test_recovery_report.html ---------------------------------------------------
+================================================================================================ short test summary info =================================================================================================
+PASSED test_recovery.py::test_create_account_sync_after_authentication_recovery
+PASSED test_recovery.py::test_create_account_sync_after_transaction_recovery
+=================================================================================================== 2 passed in 41.74s ===================================================================================================
+0
+0
+0
+successful
+```
+
 
