@@ -99,3 +99,24 @@ for account synchronization
        - M004 Login successfully with session key. Example: [M004]Login successfully[Session:8e0838bb-be3c-4cc1-a774-4ca7daf621f6]
        - E003 Unable to login. That could be application issues. Example: [E003]Unable to login
        - E004 Incorrect Login Info. Example: [E004]Incorrect Login Info
+
+  - /api/logout: To logout by providing sessionkey obtained after login
+    - sample: x=$1; curl -s http://localhost:8082/api/logout -X POST -H 'application/json' --data "sessionkey=${x}" (could be found at authenticationservice/logout_account_sample.sh) 
+    - return messages:
+       - M005 Logout successfully. Example: [M005]Logout successfully
+       - W002 Attempt to logout using invalid session key. That could happen when another login session kicks the session key out. Or the session key expires. Example: [W002]Attempt to logout using invalid session key
+       - E001 Wrong Request Content. Example: [E001]Wrong Request Content
+       - F001 System error. To be seen when the application is running wrong. Possible reasons could be database/mq/file system error
+
+  - /api/validateSession: To validate session by providing sessionkey after login
+    - sample: x=$1; curl -s http://localhost:8082/api/validateSession -X POST -H 'application/json' --data "sessionkey=${x}" (could be found at authenticationservice/validate_session_sample.sh)
+    - return messages:
+       - M007 Valid session with accountno returned. Example: [M007]Valid session[accountno=000000023796100003]
+       - M006 Invalid session. Example [M006]Invalid session
+       - E001 Wrong Request Content. Example: [E001]Wrong Request Content
+       - F001 System error. To be seen when the application is running wrong. Possible reasons could be database/mq/file system error
+
+  - /api/admin/checkStatus: To check the status of the application by providing admin password (for simplicity static password iamadmin is being used)
+    - sample: x=iamadmin; curl -s http://localhost:8082/api/admin/checkStatus -X POST -H 'application/json' --data "password=${x}" (could be found at authenticationservice/admin_check_status.sh)
+    - return message:
+       - [A001]Service is ready
