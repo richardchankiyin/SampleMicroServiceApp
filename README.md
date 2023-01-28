@@ -393,8 +393,7 @@ successful
 Requirement  | Test Case
 ------------- | -------------
 1a using Authentication Service /api/createAccount to create account  | Content Cell
-1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background
-  | Content Cell
+1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service in the background | x
 1c Authentication database and Transaction Service database are separated | x
 1d Account Synchronization success and fail tasks are being recorded in database | x
 1e Account Synchronization should be idempotent which means same task should not run twice | x
