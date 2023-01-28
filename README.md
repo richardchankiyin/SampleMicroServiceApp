@@ -21,3 +21,11 @@ The objective
 ============
 The worker to synchronize the user data should be idempotent. We record the worker task and if the task fails it should be repeatable. All data synchronization should be in the background. Test for failing tasks and test if the system repeats the task over time (duplicated) the system should acknowledge.  
 
+Analysis
+========
+# Requirements Summary
+> 1a using Authentication Service /api/createAccount to create account 
+> 1b using rabbitmq to synchronize accounts between Authentication Service and Transaction Service 
+> 1c Authentication database and Transaction Service database are separated
+> 1d Account Synchronization success and fail tasks are being recorded in database
+
