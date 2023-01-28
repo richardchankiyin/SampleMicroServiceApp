@@ -258,4 +258,17 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 +-----------------+
 ```
 
+## Setup Authentication Service Spring Boot
+- cd authenticationservice folder and type "mvn clean install" and see below to confirm build successful.
+```
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ authenticationservice ---
+[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar to /newhome/richard/.m2/repository/com/richard/authenticationservice/0.0.1-SNAPSHOT/authenticationservice-0.0.1-SNAPSHOT.jar
+[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/authenticationservice/pom.xml to /newhome/richard/.m2/repository/com/richard/authenticationservice/0.0.1-SNAPSHOT/authenticationservice-0.0.1-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.621 s
+[INFO] Finished at: 2023-01-29T00:04:24+08:00
+[INFO] ------------------------------------------------------------------------
 
+``` 
