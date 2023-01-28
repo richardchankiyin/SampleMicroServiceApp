@@ -43,7 +43,7 @@ Solution
 ==========
 ## Tech Stack
 - os: linux/mac (or Windows with bash)
-- mava 11
+- java 11
 - maven
 - docker and docker-compose (as containers of rabbitmq and mysql instances)
 - python3 (for integration test purpose, optional)
@@ -184,6 +184,9 @@ x=iamadmin;y=$1; curl -s http://localhost:8083/api/admin/retrieveDuplicateAcctSy
 
 Build
 =====
+## Setup docker
+- please add running user to docker group. Otherwise sudo will be required.
+
 ## Setup Rabbitmq
 - go to directory dockerimages/rabbitmq and type command:
 ```
@@ -286,5 +289,47 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 [INFO] Finished at: 2023-01-29T00:07:05+08:00
 [INFO] ------------------------------------------------------------------------
 
+```
+
+Run
+=====
+- please make sure docker images are all up. 
+```
+docker container ls
+CONTAINER ID   IMAGE                   COMMAND                  CREATED      STATUS        PORTS                                                                                                                                                   NAMES
+f4a32dcb8363   mysql:8.0               "docker-entrypoint.s…"   2 days ago   Up 2 days     33060/tcp, 0.0.0.0:33306->3306/tcp, :::33306->3306/tcp                                                                                                  transactionservicedb_transactionservicedb_1
+6c0017cbcae5   mysql:8.0               "docker-entrypoint.s…"   2 days ago   Up 25 hours   33060/tcp, 0.0.0.0:23306->3306/tcp, :::23306->3306/tcp                                                                                                  authenticationservicedb_authenticationservicedb_1
+22d5c054634c   rabbitmq:3-management   "docker-entrypoint.s…"   9 days ago   Up 2 days     4369/tcp, 5671/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:25672->5672/tcp, :::25672->5672/tcp, 0.0.0.0:35672->15672/tcp, :::35672->15672/tcp   rabbitmq_rabbitmq_1
+```
+- run_app.sh can be found under authenticationservice and transactionservice. Running them can bring the applications up. If not, please check any ports are being used (e.g. 8082 and 8083) 
+```
+richard@richard-linux-mint:~/asklora/repo/SampleMicroServiceApp/transactionservice$ ./run_app.sh 
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.7)
+
+2023-01-28 16:15:19.388  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : Starting TransactionserviceApplication v0.0.1-SNAPSHOT using Java 11.0.17 on richard-linux-mint with PID 46373 (/newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar started by richard in /newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice)
+2023-01-28 16:15:19.390 DEBUG 46373 --- [           main] c.r.t.TransactionserviceApplication      : Running with Spring Boot v2.7.7, Spring v5.3.24
+2023-01-28 16:15:19.391  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : No active profile set, falling back to 1 default profile: "default"
+2023-01-28 16:15:20.368  INFO 46373 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8083 (http)
+2023-01-28 16:15:20.383  INFO 46373 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-01-28 16:15:20.383  INFO 46373 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.70]
+2023-01-28 16:15:20.447  INFO 46373 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-01-28 16:15:20.447  INFO 46373 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 982 ms
+2023-01-28 16:15:20.626  INFO 46373 --- [           main] c.r.t.TransactionserviceAppResourceImpl  : authenticationservice.connect.timeout.millisecond->5000
+2023-01-28 16:15:20.627  INFO 46373 --- [           main] c.r.t.TransactionserviceAppResourceImpl  : valid authentication service connect timeout milliseconds: 5000
+2023-01-28 16:15:20.716  INFO 46373 --- [           main] c.r.t.TransactionserviceAppResourceImpl  : authenticationservice.connect.host->localhost
+2023-01-28 16:15:20.720  INFO 46373 --- [           main] c.r.t.TransactionserviceAppResourceImpl  : authenticationservice.connect.port->8082
+2023-01-28 16:15:20.722  INFO 46373 --- [           main] c.r.t.TransactionserviceAppResourceImpl  : valid authentication host and port: [localhost, 8082]
+2023-01-28 16:15:21.144  INFO 46373 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8083 (http) with context path ''
+2023-01-28 16:15:21.146  INFO 46373 --- [           main] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [localhost:25672]
+2023-01-28 16:15:21.187  INFO 46373 --- [           main] o.s.a.r.c.CachingConnectionFactory       : Created new connection: rabbitConnectionFactory#511816c0:0/SimpleConnection@3f36b447 [delegate=amqp://guest@127.0.0.1:25672/, localPort= 32968]
+2023-01-28 16:15:21.228  INFO 46373 --- [   scheduling-1] c.r.t.TransactionserviceScheduledTasks   : This is a heart beat activity
+2023-01-28 16:15:21.229  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : Started TransactionserviceApplication in 2.274 seconds (JVM running for 2.632)
 ```
 
