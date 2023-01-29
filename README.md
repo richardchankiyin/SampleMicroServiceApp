@@ -355,7 +355,7 @@ datasource.password=apppass
 messagingconnection.host=localhost
 messagingconnection.port=25672
 ```
-
+- if you need to adjust above settings, please update run_app.sh or you can make up your own scripts to bring up services 
 
 Test
 ====
