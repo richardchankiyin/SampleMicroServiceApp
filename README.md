@@ -295,7 +295,7 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 Run
 =====
 ## Normal Run
-- please make sure docker images are all up. 
+- please make sure docker containers are all up. 
 ```
 docker container ls
 CONTAINER ID   IMAGE                   COMMAND                  CREATED      STATUS        PORTS                                                                                                                                                   NAMES
