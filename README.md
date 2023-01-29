@@ -414,7 +414,7 @@ Requirement  | Test Cases
 2a using Authentication Service /api/login to login | test_authenticationservice.py::test_login_successfully, test_authenticationservice.py::test_login_failed_accountnotexist, test_authenticationservice.py::test_login_failed_wrong_password
 2b Multiple login with the same account is not allowed and old sessions should be kicked out | test_authenticationservice.py::test_login_kick_out_previous_session
 3a using Transaction Service /api/account with prior authentication done in Authentication Service | test_transactionservice.py::test_enquire_init_balance, test_transactionservice.py::test_enquire_balance_after_logout_failed  
-3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | test_transactionservice.py::test_transfer_deposit_then_enquire_balance, test_transactionservice.py::test_transfer_withdraw_then_enquire_balance
+3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | test_transactionservice.py::test_transfer_deposit_then_enquire_balance, test_transactionservice.py::test_transfer_withdraw_then_enquire_balance, test_transactionservice.py::test_transfer_after_logout_failed
 
 Continuous Integration
 ==============
