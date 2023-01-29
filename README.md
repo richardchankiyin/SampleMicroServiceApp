@@ -266,8 +266,8 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 - cd authenticationservice folder and type "mvn clean install" and see below to confirm build successful.
 ```
 [INFO] --- maven-install-plugin:2.5.2:install (default-install) @ authenticationservice ---
-[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar to /newhome/richard/.m2/repository/com/richard/authenticationservice/0.0.1-SNAPSHOT/authenticationservice-0.0.1-SNAPSHOT.jar
-[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/authenticationservice/pom.xml to /newhome/richard/.m2/repository/com/richard/authenticationservice/0.0.1-SNAPSHOT/authenticationservice-0.0.1-SNAPSHOT.pom
+[INFO] Installing /newhome/richard/github/repo/SampleMicroServiceApp/authenticationservice/target/authenticationservice-0.0.1-SNAPSHOT.jar to /newhome/richard/.m2/repository/com/richard/authenticationservice/0.0.1-SNAPSHOT/authenticationservice-0.0.1-SNAPSHOT.jar
+[INFO] Installing /newhome/richard/github/repo/SampleMicroServiceApp/authenticationservice/pom.xml to /newhome/richard/.m2/repository/com/richard/authenticationservice/0.0.1-SNAPSHOT/authenticationservice-0.0.1-SNAPSHOT.pom
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -281,8 +281,8 @@ c=$(docker container ls | grep transactionservicedb | awk '{print $1}'); docker 
 - cd transactionservice folder and type "mvn clean install" and see below to confirm build successful.
 ```
 [INFO] --- maven-install-plugin:2.5.2:install (default-install) @ transactionservice ---
-[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar to /newhome/richard/.m2/repository/com/richard/transactionservice/0.0.1-SNAPSHOT/transactionservice-0.0.1-SNAPSHOT.jar
-[INFO] Installing /newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice/pom.xml to /newhome/richard/.m2/repository/com/richard/transactionservice/0.0.1-SNAPSHOT/transactionservice-0.0.1-SNAPSHOT.pom
+[INFO] Installing /newhome/richard/github/repo/SampleMicroServiceApp/transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar to /newhome/richard/.m2/repository/com/richard/transactionservice/0.0.1-SNAPSHOT/transactionservice-0.0.1-SNAPSHOT.jar
+[INFO] Installing /newhome/richard/github/repo/SampleMicroServiceApp/transactionservice/pom.xml to /newhome/richard/.m2/repository/com/richard/transactionservice/0.0.1-SNAPSHOT/transactionservice-0.0.1-SNAPSHOT.pom
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
@@ -304,8 +304,18 @@ f4a32dcb8363   mysql:8.0               "docker-entrypoint.s…"   2 days ago   U
 22d5c054634c   rabbitmq:3-management   "docker-entrypoint.s…"   9 days ago   Up 2 days     4369/tcp, 5671/tcp, 15671/tcp, 15691-15692/tcp, 25672/tcp, 0.0.0.0:25672->5672/tcp, :::25672->5672/tcp, 0.0.0.0:35672->15672/tcp, :::35672->15672/tcp   rabbitmq_rabbitmq_1
 ```
 - run_app.sh can be found under authenticationservice and transactionservice. Running them can bring the applications up. If not, please check any ports are being used (e.g. 8082 and 8083) 
+
 ```
-richard@richard-linux-mint:~/asklora/repo/SampleMicroServiceApp/transactionservice$ ./run_app.sh 
+SampleMicroServiceApp$ cd authenticationservice/
+SampleMicroServiceApp/authenticationservice e$ cat run_app.sh 
+java -Dsession.valid.duration.millisecond=300000 -Duser.timezone=UTC -Dlogging.level.com.richard.authenticationservice=DEBUG -Dserver.port=8082 -jar target/authenticationservice-0.0.1-SNAPSHOT.jar
+
+SampleMicroServiceApp/authenticationservice$ cd ../transactionservice/
+SampleMicroServiceApp/transactionservice$ cat run_app.sh 
+java -Duser.timezone=UTC -Dlogging.level.com.richard.transactionservice=DEBUG -Dauthenticationservice.connect.host=localhost -Dauthenticationservice.connect.port=8082 -Dauthenticationservice.connect.timeout.millisecond=5000 -Dserver.port=8083 -jar target/transactionservice-0.0.1-SNAPSHOT.jar
+```
+
+```
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -315,7 +325,7 @@ richard@richard-linux-mint:~/asklora/repo/SampleMicroServiceApp/transactionservi
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.7.7)
 
-2023-01-28 16:15:19.388  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : Starting TransactionserviceApplication v0.0.1-SNAPSHOT using Java 11.0.17 on richard-linux-mint with PID 46373 (/newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar started by richard in /newhome/richard/asklora/repo/SampleMicroServiceApp/transactionservice)
+2023-01-28 16:15:19.388  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : Starting TransactionserviceApplication v0.0.1-SNAPSHOT using Java 11.0.17 on richard-linux-mint with PID 46373 (/newhome/richard/github/repo/SampleMicroServiceApp/transactionservice/target/transactionservice-0.0.1-SNAPSHOT.jar started by richard in /newhome/richard/github/repo/SampleMicroServiceApp/transactionservice)
 2023-01-28 16:15:19.390 DEBUG 46373 --- [           main] c.r.t.TransactionserviceApplication      : Running with Spring Boot v2.7.7, Spring v5.3.24
 2023-01-28 16:15:19.391  INFO 46373 --- [           main] c.r.t.TransactionserviceApplication      : No active profile set, falling back to 1 default profile: "default"
 2023-01-28 16:15:20.368  INFO 46373 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8083 (http)
@@ -345,6 +355,7 @@ datasource.password=apppass
 messagingconnection.host=localhost
 messagingconnection.port=25672
 ```
+
 
 Test
 ====
@@ -389,7 +400,7 @@ transactiondb account r2:[('000000023922330001', 'tcasatr1')]
 INFO     root:test_recovery.py:111 
 authenticationdb accountsync r1: [('22c4bc11-f19c-438f-9bbf-090de6373832', '000000023922330001', '{"msgKey":"22c4bc11-f19c-438f-9bbf-090de6373832","account":{"accountNo":"000000023922330001","name":"tcasatr1"}}', 'S')]
 transactiondb accountsync r2:[('22c4bc11-f19c-438f-9bbf-090de6373832', '000000023922330001', '{"msgKey":"22c4bc11-f19c-438f-9bbf-090de6373832","account":{"accountNo":"000000023922330001","name":"tcasatr1"}}', 'S')]
--------------------------------------------------- generated html file: file:///newhome/richard/asklora/repo/SampleMicroServiceApp/testcases/test_recovery_report.html ---------------------------------------------------
+-------------------------------------------------- generated html file: file:///newhome/richard/github/repo/SampleMicroServiceApp/testcases/test_recovery_report.html ---------------------------------------------------
 ================================================================================================ short test summary info =================================================================================================
 PASSED test_recovery.py::test_create_account_sync_after_authentication_recovery
 PASSED test_recovery.py::test_create_account_sync_after_transaction_recovery
