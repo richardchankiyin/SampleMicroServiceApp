@@ -173,7 +173,7 @@ x=$1; y=$2; curl -s http://localhost:8083/api/account/transfer -X POST -H 'appli
 x=iamadmin; curl -s http://localhost:8083/api/admin/checkStatus -X POST -H 'application/json' --data "password=${x}" 
 ```
 
-  - /api/admin/retrieveDuplicateAcctSync: To check the status of the application by providing admin password and messagekey (for simplicity static password iamadmin is being used)
+  - /api/admin/retrieveDuplicateAcctSync: To check any duplication of account sync found by providing admin password and messagekey (for simplicity static password iamadmin is being used)
     - return messages:
        - [A003]No duplicate account sync found
        - A004 Duplicate account sync found with message detail. Example: [A004]Duplicate account sync found[msgkey=0268ddb2-4453-4523-bb0a-9be27f88b0b7,accountno=000000023832080006,payload={"msgKey":"0268ddb2-4453-4523-bb0a-9be27f88b0b7","account":{"accountNo":"000000023832080006","name":"tai1"}},time=2023-01-28 14:00:28.211]
