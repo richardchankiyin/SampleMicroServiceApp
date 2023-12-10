@@ -427,10 +427,3 @@ Requirement  | Test Cases
 3a using Transaction Service /api/account with prior authentication done in Authentication Service | test_transactionservice.py::test_enquire_init_balance, test_transactionservice.py::test_enquire_balance_after_logout_failed  
 3b using Transaction Service /api/account/transfer with prior authentication done in Authentication Service | test_transactionservice.py::test_transfer_deposit_then_enquire_balance, test_transactionservice.py::test_transfer_withdraw_then_enquire_balance, test_transactionservice.py::test_transfer_after_logout_failed
 
-Continuous Integration
-==============
-This repo is ready for continuous integration. A jenkins instance has been setup with information:
-- http://3.0.174.58/
-- login: guest/welcome
-- SampleMicroServiceApp shows maven build and unit test results
-- SampleMicroServiceApp_integration shows integration test results and reports
